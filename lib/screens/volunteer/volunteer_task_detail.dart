@@ -53,7 +53,8 @@ class VolunteerTaskDetail extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                              color:
+                                  AppTheme.primaryColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
@@ -142,8 +143,8 @@ class VolunteerTaskDetail extends StatelessWidget {
                       Row(
                         children: [
                           CircleAvatar(
-                            backgroundColor: AppTheme.primaryColor.withValues(alpha: 
-                              0.2,
+                            backgroundColor: AppTheme.primaryColor.withValues(
+                              alpha: 0.2,
                             ),
                             child: Text(
                               request.requesterName[0].toUpperCase(),
@@ -217,8 +218,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                       );
                       if (context.mounted) {
                         final currentUser = appState.currentUser;
-                        final totalHelped =
-                            (currentUser?.completedTasks ?? 0) + 1;
+                        final totalHelped = currentUser?.completedTasks ?? 0;
 
                         await showDialog(
                           context: context,

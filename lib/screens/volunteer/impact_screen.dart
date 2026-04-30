@@ -14,7 +14,8 @@ class ImpactScreen extends StatelessWidget {
         final completedRequests = appState
             .getAllRequests()
             .where((r) => r.volunteerId == user?.id && r.completedAt != null)
-            .toList();
+            .toList()
+          ..sort((a, b) => b.completedAt!.compareTo(a.completedAt!));
 
         final totalTasks = completedRequests.length;
         final uniquePeople =
@@ -89,7 +90,6 @@ class ImpactScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-
                 Row(
                   children: [
                     Expanded(
@@ -134,7 +134,6 @@ class ImpactScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-
                 if (totalTasks > 0) ...[
                   const SizedBox(height: 32),
                   Text(
@@ -153,7 +152,6 @@ class ImpactScreen extends StatelessWidget {
                         ),
                       ),
                 ],
-
                 if (totalTasks == 0) ...[
                   const SizedBox(height: 32),
                   Center(
@@ -182,7 +180,6 @@ class ImpactScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-
                 const SizedBox(height: 32),
               ],
             ),
@@ -278,8 +275,12 @@ class _ImpactItem extends StatelessWidget {
     if (diff.inDays == 0) return 'Azi';
     if (diff.inDays == 1) return 'Ieri';
     if (diff.inDays < 7) return 'Acum ${diff.inDays} zile';
-    if (diff.inDays < 30) return 'Acum ${(diff.inDays / 7).floor()} săptămâni';
-    return 'Acum ${(diff.inDays / 30).floor()} luni';
+    if (diff.inDays < 30) {
+      final weeks = (diff.inDays / 7).floor();
+      return weeks == 1 ? 'Acum 1 săptămână' : 'Acum $weeks săptămâni';
+    }
+    final months = (diff.inDays / 30).floor();
+    return months == 1 ? 'Acum 1 lună' : 'Acum $months luni';
   }
 
   @override

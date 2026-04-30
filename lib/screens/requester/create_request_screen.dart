@@ -37,10 +37,8 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   }
 
   Future<void> _submit() async {
-    // Validate form fields
     if (!_formKey.currentState!.validate()) return;
 
-    // Additional validations
     if (_descriptionController.text.trim().length < 10) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -61,7 +59,6 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       return;
     }
 
-    // Validate preferred time is in the future
     if (_preferredTime.isBefore(DateTime.now())) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -72,7 +69,6 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       return;
     }
 
-    // Validate proxy fields if proxy is enabled
     if (_isProxy) {
       if (_proxyNameController.text.trim().isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(

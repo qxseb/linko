@@ -205,6 +205,23 @@ class AppState extends ChangeNotifier {
         await _messageService.addStatusMessage(requestId, 'inProgress');
       } else if (status == RequestStatus.completed) {
         await _messageService.addStatusMessage(requestId, 'completed');
+
+        if (currentUser != null && currentUser!.role == UserRole.volunteer) {
+          final updatedUser = User(
+            id: currentUser!.id,
+            name: currentUser!.name,
+            email: currentUser!.email,
+            role: currentUser!.role,
+            phone: currentUser!.phone,
+            address: currentUser!.address,
+            isVerified: currentUser!.isVerified,
+            completedTasks: currentUser!.completedTasks + 1,
+            createdAt: currentUser!.createdAt,
+            lastActive: currentUser!.lastActive,
+            avgResponseMinutes: currentUser!.avgResponseMinutes,
+          );
+          _authService.setUser(updatedUser);
+        }
       }
 
       notifyListeners();
