@@ -4,7 +4,7 @@
 
 **Conectăm persoane care au nevoie de ajutor cu voluntari din comunitate**
 
-[Demo Video](#) • [Pitch Video](#)
+[Demo Video](#) • [Pitch Video](#) • [Business Plan](./livrabile/Business-plan_HE-6.0.pptx)
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-02569B?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?logo=dart)](https://dart.dev)
