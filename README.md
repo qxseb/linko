@@ -4,15 +4,23 @@
 
 **Conectăm persoane care au nevoie de ajutor cu voluntari din comunitate**
 
-[Demo Video](#) • [Pitch Video](#) • [Business Plan](./livrabile/Business-plan_HE-6.0.pptx)
+Team: Onyx Solutions
+
+[Demo Video](https://youtu.be/jAjmJudZ0A0) • [Pitch Video](https://youtu.be/wjKUxqIhHrI) • [Business Plan](./livrabile/Business-plan_HE-6.0.pptx)
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-02569B?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?logo=dart)](https://dart.dev)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](#)
 
 </div>
 
 ---
+
+### Mențiune privind participarea
+
+Acest proiect a fost inițial înscris ca echipă formată din doi membri. Pe parcurs, celălalt membru a ales să nu mai continue participarea în cadrul concursului.
+
+Ca urmare, întregul proiect, a fost realizat individual de către mine. Această înscriere reprezintă, prin urmare, munca mea individuală.
 
 ## 📱 Despre Linko
 
