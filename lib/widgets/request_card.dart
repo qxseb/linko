@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../models/request_model.dart';
 import '../models/user_model.dart';
+import '../utils/english_text.dart';
 import '../utils/theme.dart';
-import '../utils/formatters.dart';
 
 class RequestCard extends StatelessWidget {
   final Request request;
@@ -31,6 +32,9 @@ class RequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final urgencyColor = AppTheme.getUrgencyColor(request.urgency);
+    final statusColor = AppTheme.getStatusColor(request.status);
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
@@ -61,11 +65,10 @@ class RequestCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          request.categoryLabel,
+                          request.category.label,
                           style:
                               Theme.of(context).textTheme.bodyLarge!.copyWith(
                                     fontWeight: FontWeight.w600,
-                                    letterSpacing: -0.2,
                                   ),
                         ),
                         const SizedBox(height: 2),
@@ -90,7 +93,7 @@ class RequestCard extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                '${requesterInfo!.completedTasks} finalizate',
+                                '${requesterInfo!.completedTasks} completed',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall!
@@ -101,7 +104,7 @@ class RequestCard extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                '•',
+                                '|',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall!
@@ -111,7 +114,7 @@ class RequestCard extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                requesterInfo!.lastActiveLabel,
+                                requesterInfo!.lastActiveText,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall!
@@ -130,15 +133,13 @@ class RequestCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: AppTheme.getUrgencyColor(request.urgencyLabel)
-                          .withValues(alpha: 0.12),
+                      color: urgencyColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      request.urgencyLabel,
+                      request.urgency.label,
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color:
-                                AppTheme.getUrgencyColor(request.urgencyLabel),
+                            color: urgencyColor,
                             fontWeight: FontWeight.w600,
                             fontSize: 12,
                           ),
@@ -148,7 +149,7 @@ class RequestCard extends StatelessWidget {
               ),
               const SizedBox(height: 14),
               Text(
-                request.description,
+                requestDescriptionText(request),
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       height: 1.5,
                       color: AppTheme.textPrimary.withValues(alpha: 0.9),
@@ -160,10 +161,14 @@ class RequestCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const Icon(Icons.people, size: 15, color: AppTheme.primaryColor),
+                    const Icon(
+                      Icons.people,
+                      size: 15,
+                      color: AppTheme.primaryColor,
+                    ),
                     const SizedBox(width: 6),
                     Text(
-                      'Cerere în numele altcuiva',
+                      'Request on behalf of someone else',
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: AppTheme.primaryColor,
                             fontWeight: FontWeight.w600,
@@ -176,8 +181,11 @@ class RequestCard extends StatelessWidget {
               const SizedBox(height: 14),
               Row(
                 children: [
-                  const Icon(Icons.location_on,
-                      size: 16, color: AppTheme.textSecondary),
+                  const Icon(
+                    Icons.location_on,
+                    size: 16,
+                    color: AppTheme.textSecondary,
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
@@ -190,11 +198,14 @@ class RequestCard extends StatelessWidget {
               const SizedBox(height: 6),
               Row(
                 children: [
-                  const Icon(Icons.access_time,
-                      size: 16, color: AppTheme.textSecondary),
+                  const Icon(
+                    Icons.access_time,
+                    size: 16,
+                    color: AppTheme.textSecondary,
+                  ),
                   const SizedBox(width: 6),
                   Text(
-                    Formatters.formatPreferredTime(request.preferredTime),
+                    formatPreferredTimeText(request.preferredTime),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const Spacer(),
@@ -202,14 +213,13 @@ class RequestCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: AppTheme.getStatusColor(request.statusLabel)
-                          .withValues(alpha: 0.12),
+                      color: statusColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      request.statusLabel,
+                      request.status.label,
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: AppTheme.getStatusColor(request.statusLabel),
+                            color: statusColor,
                             fontWeight: FontWeight.w600,
                             fontSize: 12,
                           ),

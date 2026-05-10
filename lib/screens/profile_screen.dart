@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
 import '../models/user_model.dart';
 import '../providers/app_state.dart';
+import '../utils/english_text.dart';
 import '../utils/theme.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -16,13 +18,13 @@ class ProfileScreen extends StatelessWidget {
 
         if (user == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Profil')),
-            body: const Center(child: Text('Nu ești autentificat')),
+            appBar: AppBar(title: const Text('Profile')),
+            body: const Center(child: Text('You are not signed in')),
           );
         }
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Profil')),
+          appBar: AppBar(title: const Text('Profile')),
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -33,7 +35,8 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 48,
-                        backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.2),
+                        backgroundColor:
+                            AppTheme.primaryColor.withValues(alpha: 0.2),
                         child: Text(
                           user.name[0].toUpperCase(),
                           style: const TextStyle(
@@ -60,57 +63,15 @@ class ProfileScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           if (user.isVerified)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTheme.secondaryColor.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.verified,
-                                    size: 16,
-                                    color: AppTheme.secondaryColor,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    'Verificat',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                          color: AppTheme.secondaryColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                  ),
-                                ],
-                              ),
+                            const _Badge(
+                              icon: Icons.verified,
+                              text: 'Verified',
+                              color: AppTheme.secondaryColor,
                             ),
                           const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Text(
-                              user.trustLevel,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                    color: AppTheme.primaryColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
+                          _Badge(
+                            text: user.trustLevelLabel,
+                            color: AppTheme.primaryColor,
                           ),
                         ],
                       ),
@@ -124,42 +85,42 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     _ProfileItem(
                       icon: Icons.person,
-                      label: 'Rol',
+                      label: 'Role',
                       value: user.role == UserRole.requester
-                          ? 'Solicitant'
-                          : 'Voluntar',
+                          ? 'Requester'
+                          : 'Volunteer',
                     ),
                     const Divider(height: 1),
                     _ProfileItem(
                       icon: Icons.phone,
-                      label: 'Telefon',
-                      value: user.phone ?? 'Necompletat',
+                      label: 'Phone',
+                      value: user.phone ?? 'Not filled in',
                     ),
                     const Divider(height: 1),
                     _ProfileItem(
                       icon: Icons.location_on,
-                      label: 'Adresă',
-                      value: user.address ?? 'Necompletat',
+                      label: 'Address',
+                      value: user.address ?? 'Not filled in',
                     ),
                     const Divider(height: 1),
                     _ProfileItem(
                       icon: Icons.check_circle,
-                      label: 'Sarcini finalizate',
+                      label: 'Completed tasks',
                       value: '${user.completedTasks}',
                     ),
                     const Divider(height: 1),
                     _ProfileItem(
                       icon: Icons.access_time,
-                      label: 'Ultima activitate',
-                      value: user.lastActiveLabel,
+                      label: 'Last activity',
+                      value: user.lastActiveText,
                     ),
                     if (user.role == UserRole.volunteer &&
                         user.avgResponseMinutes != null) ...[
                       const Divider(height: 1),
                       _ProfileItem(
                         icon: Icons.speed,
-                        label: 'Timp răspuns',
-                        value: user.responseTimeLabel,
+                        label: 'Response time',
+                        value: user.responseTimeText,
                       ),
                     ],
                   ],
@@ -171,16 +132,16 @@ class ProfileScreen extends StatelessWidget {
                   final confirm = await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Ieși din cont?'),
-                      content: const Text('Sigur vrei să ieși?'),
+                      title: const Text('Sign out?'),
+                      content: const Text('Are you sure you want to sign out?'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Nu'),
+                          child: const Text('No'),
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
-                          child: const Text('Da, ieși'),
+                          child: const Text('Yes, sign out'),
                         ),
                       ],
                     ),
@@ -188,13 +149,11 @@ class ProfileScreen extends StatelessWidget {
 
                   if (confirm == true && context.mounted) {
                     await appState.logout();
-                    if (context.mounted) {
-                      context.go('/');
-                    }
+                    if (context.mounted) context.go('/');
                   }
                 },
                 icon: const Icon(Icons.logout),
-                label: const Text('Ieși din cont'),
+                label: const Text('Sign out'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppTheme.errorColor,
                   side: const BorderSide(color: AppTheme.errorColor),
@@ -204,6 +163,45 @@ class ProfileScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _Badge extends StatelessWidget {
+  final IconData? icon;
+  final String text;
+  final Color color;
+
+  const _Badge({
+    this.icon,
+    required this.text,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            text,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -235,9 +233,10 @@ class _ProfileItem extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w500),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.w500),
                 ),
               ],
             ),

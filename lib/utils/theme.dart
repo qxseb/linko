@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../models/request_model.dart';
 
 class AppTheme {
   static const Color primaryColor = Color(0xFF2563EB);
@@ -184,16 +185,23 @@ class AppTheme {
     );
   }
 
-  static Color getUrgencyColor(String urgency) {
-    switch (urgency.toLowerCase()) {
-      case 'urgentă':
+  static Color getUrgencyColor(Object urgency) {
+    if (urgency is RequestUrgency) {
+      switch (urgency) {
+        case RequestUrgency.high:
+          return errorColor;
+        case RequestUrgency.medium:
+          return warningColor;
+        case RequestUrgency.low:
+          return secondaryColor;
+      }
+    }
+
+    switch (urgency.toString().toLowerCase()) {
       case 'high':
         return errorColor;
-      case 'medie':
       case 'medium':
         return warningColor;
-      case 'normală':
-      case 'scăzută':
       case 'low':
         return secondaryColor;
       default:
@@ -201,22 +209,32 @@ class AppTheme {
     }
   }
 
-  static Color getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'deschisă':
+  static Color getStatusColor(Object status) {
+    if (status is RequestStatus) {
+      switch (status) {
+        case RequestStatus.open:
+          return primaryColor;
+        case RequestStatus.accepted:
+          return warningColor;
+        case RequestStatus.inProgress:
+          return const Color(0xFF9B59B6);
+        case RequestStatus.completed:
+          return secondaryColor;
+        case RequestStatus.cancelled:
+          return textSecondary;
+      }
+    }
+
+    switch (status.toString().toLowerCase()) {
       case 'open':
         return primaryColor;
-      case 'acceptată':
       case 'accepted':
         return warningColor;
-      case 'în desfășurare':
       case 'in progress':
       case 'inprogress':
         return const Color(0xFF9B59B6);
-      case 'finalizată':
       case 'completed':
         return secondaryColor;
-      case 'anulată':
       case 'cancelled':
         return textSecondary;
       default:
@@ -224,3 +242,4 @@ class AppTheme {
     }
   }
 }
+

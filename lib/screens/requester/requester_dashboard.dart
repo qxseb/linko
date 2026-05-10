@@ -14,7 +14,7 @@ class RequesterDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cererile mele'),
+        title: const Text('My requests'),
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
@@ -46,13 +46,13 @@ class RequesterDashboard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Cereri active',
+                      'Active requests',
                       style: Theme.of(context).textTheme.displaySmall,
                     ),
                     TextButton.icon(
                       onPressed: () => context.push('/requester/all-requests'),
                       icon: const Icon(Icons.history, size: 18),
-                      label: const Text('Vezi toate'),
+                      label: const Text('View all'),
                     ),
                   ],
                 ),
@@ -60,13 +60,13 @@ class RequesterDashboard extends StatelessWidget {
                 if (activeRequests.isEmpty)
                   EmptyState(
                     icon: Icons.inbox,
-                    title: 'Nicio cerere activă',
-                    message: 'Creează o cerere nouă pentru a primi ajutor',
+                    title: 'No active requests',
+                    message: 'Create a new request to receive help',
                     action: ElevatedButton.icon(
                       onPressed: () =>
                           context.push('/requester/create-request'),
                       icon: const Icon(Icons.add),
-                      label: const Text('Creează cerere'),
+                      label: const Text('Create request'),
                     ),
                   )
                 else
@@ -92,7 +92,7 @@ class RequesterDashboard extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/requester/create-request'),
         icon: const Icon(Icons.add),
-        label: const Text('Cerere nouă'),
+        label: const Text('New request'),
         backgroundColor: AppTheme.primaryColor,
         foregroundColor: Colors.white,
         elevation: 2,

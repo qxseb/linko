@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../utils/english_text.dart';
 import '../../providers/app_state.dart';
 import '../../utils/theme.dart';
 
@@ -66,8 +67,8 @@ class ImpactScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       Text(
                         peopleThisMonth > 0
-                            ? 'Ai ajutat $peopleThisMonth ${peopleThisMonth == 1 ? 'persoană' : 'persoane'} luna asta'
-                            : 'Începe să ajuți oameni!',
+                            ? 'You helped $peopleThisMonth ${peopleThisMonth == 1 ? 'person' : 'people'} this month'
+                            : 'Start helping people!',
                         style:
                             Theme.of(context).textTheme.headlineSmall!.copyWith(
                                   color: Colors.white,
@@ -78,7 +79,7 @@ class ImpactScreen extends StatelessWidget {
                       if (peopleThisMonth > 0) ...[
                         const SizedBox(height: 8),
                         Text(
-                          'Mulțumim pentru dedicare! 🙏',
+                          'Thank you for your dedication!',
                           style:
                               Theme.of(context).textTheme.bodyLarge!.copyWith(
                                     color: Colors.white.withValues(alpha: 0.9),
@@ -96,7 +97,7 @@ class ImpactScreen extends StatelessWidget {
                       child: _StatCard(
                         icon: Icons.people,
                         value: uniquePeople.toString(),
-                        label: 'Persoane\najutate',
+                        label: 'People\nhelped',
                         color: AppTheme.primaryColor,
                       ),
                     ),
@@ -105,7 +106,7 @@ class ImpactScreen extends StatelessWidget {
                       child: _StatCard(
                         icon: Icons.check_circle,
                         value: totalTasks.toString(),
-                        label: 'Sarcini\nfinalizate',
+                        label: 'Completed\ntasks',
                         color: AppTheme.secondaryColor,
                       ),
                     ),
@@ -127,7 +128,7 @@ class ImpactScreen extends StatelessWidget {
                       child: _StatCard(
                         icon: Icons.star,
                         value: user?.trustLevel ?? 'Nou',
-                        label: 'Nivel\nîncredere',
+                        label: 'Trust\nlevel',
                         color: Colors.amber,
                         isText: true,
                       ),
@@ -137,7 +138,7 @@ class ImpactScreen extends StatelessWidget {
                 if (totalTasks > 0) ...[
                   const SizedBox(height: 32),
                   Text(
-                    'Activitate recentă',
+                    'Recent activity',
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -146,7 +147,7 @@ class ImpactScreen extends StatelessWidget {
                   ...completedRequests.take(5).map(
                         (request) => _ImpactItem(
                           icon: _getCategoryIcon(request.category.name),
-                          title: request.categoryLabel,
+                          title: request.category.label,
                           subtitle: request.requesterName,
                           date: request.completedAt!,
                         ),
@@ -164,7 +165,7 @@ class ImpactScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Începe să ajuți!',
+                          'Start helping!',
                           style:
                               Theme.of(context).textTheme.titleLarge!.copyWith(
                                     color: AppTheme.textSecondary,
@@ -172,7 +173,7 @@ class ImpactScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Acceptă prima cerere pentru\na vedea impactul tău',
+                          'Accept your first request\nto see your impact',
                           style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.center,
                         ),
@@ -274,13 +275,13 @@ class _ImpactItem extends StatelessWidget {
 
     if (diff.inDays == 0) return 'Azi';
     if (diff.inDays == 1) return 'Ieri';
-    if (diff.inDays < 7) return 'Acum ${diff.inDays} zile';
+    if (diff.inDays < 7) return '${diff.inDays} days ago';
     if (diff.inDays < 30) {
       final weeks = (diff.inDays / 7).floor();
-      return weeks == 1 ? 'Acum 1 săptămână' : 'Acum $weeks săptămâni';
+      return weeks == 1 ? '1 week ago' : '$weeks weeks ago';
     }
     final months = (diff.inDays / 30).floor();
-    return months == 1 ? 'Acum 1 lună' : 'Acum $months luni';
+    return months == 1 ? '1 month ago' : '$months months ago';
   }
 
   @override

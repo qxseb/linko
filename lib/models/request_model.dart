@@ -46,39 +46,39 @@ class Request {
   String get categoryLabel {
     switch (category) {
       case RequestCategory.groceries:
-        return 'Cumpărături';
+        return 'Groceries';
       case RequestCategory.pharmacy:
-        return 'Farmacie';
+        return 'Pharmacy';
       case RequestCategory.errands:
-        return 'Treburi';
+        return 'Errands';
       case RequestCategory.checkIn:
-        return 'Verificare';
+        return 'Check-in';
     }
   }
 
   String get urgencyLabel {
     switch (urgency) {
       case RequestUrgency.low:
-        return 'Normală';
+        return 'Low';
       case RequestUrgency.medium:
-        return 'Medie';
+        return 'Medium';
       case RequestUrgency.high:
-        return 'Urgentă';
+        return 'High';
     }
   }
 
   String get statusLabel {
     switch (status) {
       case RequestStatus.open:
-        return 'Deschisă';
+        return 'Open';
       case RequestStatus.accepted:
-        return 'Acceptată';
+        return 'Accepted';
       case RequestStatus.inProgress:
-        return 'În desfășurare';
+        return 'In progress';
       case RequestStatus.completed:
-        return 'Finalizată';
+        return 'Completed';
       case RequestStatus.cancelled:
-        return 'Anulată';
+        return 'Cancelled';
     }
   }
 

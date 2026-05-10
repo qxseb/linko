@@ -28,26 +28,26 @@ class User {
   });
 
   String get trustLevel {
-    if (completedTasks == 0) return 'Nou';
-    if (completedTasks < 5) return 'Activ';
-    return 'De încredere';
+    if (completedTasks == 0) return 'New';
+    if (completedTasks < 5) return 'Active';
+    return 'Trusted';
   }
 
   String get lastActiveLabel {
-    if (lastActive == null) return 'Înregistrat recent';
+    if (lastActive == null) return 'Joined recently';
     final diff = DateTime.now().difference(lastActive!);
-    if (diff.inMinutes < 60) return 'Activ acum';
-    if (diff.inHours < 24) return 'Activ azi';
-    if (diff.inDays == 1) return 'Activ ieri';
-    if (diff.inDays < 7) return 'Activ săptămâna asta';
-    return 'Activ acum ${diff.inDays} zile';
+    if (diff.inMinutes < 60) return 'Active now';
+    if (diff.inHours < 24) return 'Active today';
+    if (diff.inDays == 1) return 'Active yesterday';
+    if (diff.inDays < 7) return 'Active this week';
+    return 'Active ${diff.inDays} days ago';
   }
 
   String get responseTimeLabel {
-    if (avgResponseMinutes == null) return 'Voluntar nou';
-    if (avgResponseMinutes! < 15) return 'Răspunde rapid';
-    if (avgResponseMinutes! < 60) return 'Răspunde în max 1h';
-    return 'Răspunde în aceeași zi';
+    if (avgResponseMinutes == null) return 'New volunteer';
+    if (avgResponseMinutes! < 15) return 'Responds quickly';
+    if (avgResponseMinutes! < 60) return 'Responds within 1h';
+    return 'Responds the same day';
   }
 
   Map<String, dynamic> toJson() => {

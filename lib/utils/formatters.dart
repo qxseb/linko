@@ -7,16 +7,14 @@ class Formatters {
 
     if (difference.inDays == 0) {
       if (difference.inHours == 0) {
-        if (difference.inMinutes == 0) {
-          return 'Acum';
-        }
-        return 'Acum ${difference.inMinutes}m';
+        if (difference.inMinutes == 0) return 'Now';
+        return '${difference.inMinutes}m ago';
       }
-      return 'Acum ${difference.inHours}h';
+      return '${difference.inHours}h ago';
     } else if (difference.inDays == 1) {
-      return 'Ieri';
+      return 'Yesterday';
     } else if (difference.inDays < 7) {
-      return 'Acum ${difference.inDays}z';
+      return '${difference.inDays}d ago';
     } else {
       return DateFormat('d MMM y').format(date);
     }
@@ -35,11 +33,11 @@ class Formatters {
     final difference = date.difference(now);
 
     if (difference.inDays == 0) {
-      return 'Azi la ${formatTime(date)}';
+      return 'Today at ${formatTime(date)}';
     } else if (difference.inDays == 1) {
-      return 'Mâine la ${formatTime(date)}';
+      return 'Tomorrow at ${formatTime(date)}';
     } else if (difference.inDays < 7) {
-      return '${DateFormat('EEEE').format(date)} la ${formatTime(date)}';
+      return '${DateFormat('EEEE').format(date)} at ${formatTime(date)}';
     } else {
       return formatDateTime(date);
     }

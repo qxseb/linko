@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 import '../models/request_model.dart';
@@ -9,12 +11,19 @@ import '../services/message_service.dart';
 import '../services/notification_service.dart';
 import '../services/storage_service.dart';
 import '../services/mock_data_service.dart';
+import '../services/api/api_client.dart';
+import '../services/api/auth_api_service.dart';
+import '../services/api/request_api_service.dart';
+import '../services/api/message_api_service.dart';
+import '../services/api/socket_sync_service.dart';
 
 class AppState extends ChangeNotifier {
   late final StorageService _storageService;
+  late final ApiClient _apiClient;
   late final AuthService _authService;
   late final RequestService _requestService;
   late final MessageService _messageService;
+  SocketSyncService? _socketSyncService;
   final NotificationService _notificationService = NotificationService();
 
   bool _isInitialized = false;
@@ -27,15 +36,62 @@ class AppState extends ChangeNotifier {
   Future<void> _initializeServices() async {
     _storageService = StorageService();
     await _storageService.init();
-    _authService = AuthService(_storageService);
-    _requestService = RequestService(_storageService);
-    _messageService = MessageService(_storageService);
+    _apiClient = ApiClient();
+    _authService = AuthService(_storageService, AuthApiService(_apiClient));
+    _requestService =
+        RequestService(_storageService, RequestApiService(_apiClient));
+    _messageService =
+        MessageService(_storageService, MessageApiService(_apiClient));
     await _authService.init();
     await _requestService.init();
     await _messageService.init();
+    _socketSyncService = SocketSyncService(_apiClient)
+      ..connect(
+        onEvent: (eventName, payload) {
+          unawaited(_handleSocketEvent(eventName, payload));
+        },
+      );
 
     _isInitialized = true;
     notifyListeners();
+  }
+
+  Future<void> _handleSocketEvent(String eventName, dynamic payload) async {
+    try {
+      final requestId = _requestIdFromSocketPayload(payload);
+
+      if (eventName.startsWith("request_")) {
+        await _requestService.refreshRequests();
+
+        if (requestId != null && _messageService.hasCachedMessages(requestId)) {
+          await _messageService.loadMessagesForRequest(requestId);
+        }
+
+        if (eventName == 'request_completed' &&
+            currentUser?.role == UserRole.volunteer) {
+          await _authService.refreshCurrentUser();
+        }
+
+        notifyListeners();
+        return;
+      }
+
+      if (eventName == 'message_created' && requestId != null) {
+        if (_messageService.hasCachedMessages(requestId)) {
+          await _messageService.loadMessagesForRequest(requestId);
+          notifyListeners();
+        }
+      }
+    } catch (_) {
+      // Socket events are only refresh hints. REST/local state remains usable.
+    }
+  }
+
+  String? _requestIdFromSocketPayload(dynamic payload) {
+    if (payload is Map) {
+      return payload['requestId']?.toString();
+    }
+    return null;
   }
 
   User? get currentUser => _authService.currentUser;
@@ -63,9 +119,11 @@ class AppState extends ChangeNotifier {
       setError(null);
       await Future.delayed(const Duration(milliseconds: 200));
       await _authService.login(email, password, role);
+      await _requestService.refreshRequests();
       notifyListeners();
     } catch (e) {
       setError(e.toString());
+      rethrow;
     } finally {
       setLoading(false);
     }
@@ -82,9 +140,11 @@ class AppState extends ChangeNotifier {
       setError(null);
       await Future.delayed(const Duration(milliseconds: 200));
       await _authService.register(name, email, password, role);
+      await _requestService.refreshRequests();
       notifyListeners();
     } catch (e) {
       setError(e.toString());
+      rethrow;
     } finally {
       setLoading(false);
     }
@@ -113,7 +173,8 @@ class AppState extends ChangeNotifier {
   Request? getRequestById(String id) => _requestService.getRequestById(id);
 
   User? getUserById(String userId) {
-    return MockDataService.getUserById(userId);
+    return _requestService.getUserById(userId) ??
+        MockDataService.getUserById(userId);
   }
 
   Future<Request> createRequest({
@@ -127,7 +188,7 @@ class AppState extends ChangeNotifier {
     String? proxyRelationship,
     String? proxyNotes,
   }) async {
-    if (currentUser == null) throw Exception('Nu ești autentificat');
+    if (currentUser == null) throw Exception('Not authenticated');
 
     final request = await _requestService.createRequest(
       requesterId: currentUser!.id,
@@ -149,7 +210,7 @@ class AppState extends ChangeNotifier {
 
   Future<Message> acceptRequest(String requestId) async {
     if (currentUser == null) {
-      throw Exception('Nu ești autentificat');
+      throw Exception('Not authenticated');
     }
 
     try {
@@ -158,11 +219,11 @@ class AppState extends ChangeNotifier {
 
       final request = getRequestById(requestId);
       if (request == null) {
-        throw Exception('Cererea nu a fost găsită');
+        throw Exception('Request not found');
       }
 
       if (request.status != RequestStatus.open) {
-        throw Exception('Cererea a fost deja acceptată de alt voluntar');
+        throw Exception('Request already accepted');
       }
 
       await _requestService.acceptRequest(
@@ -180,7 +241,7 @@ class AppState extends ChangeNotifier {
       notifyListeners();
       return initialMessage;
     } catch (e) {
-      setError('Eroare la acceptarea cererii: ${e.toString()}');
+      setError('Failed to accept request: ${e.toString()}');
       rethrow;
     } finally {
       setLoading(false);
@@ -192,7 +253,7 @@ class AppState extends ChangeNotifier {
     RequestStatus status,
   ) async {
     if (currentUser == null) {
-      throw Exception('Nu ești autentificat');
+      throw Exception('Not authenticated');
     }
 
     try {
@@ -207,26 +268,29 @@ class AppState extends ChangeNotifier {
         await _messageService.addStatusMessage(requestId, 'completed');
 
         if (currentUser != null && currentUser!.role == UserRole.volunteer) {
-          final updatedUser = User(
-            id: currentUser!.id,
-            name: currentUser!.name,
-            email: currentUser!.email,
-            role: currentUser!.role,
-            phone: currentUser!.phone,
-            address: currentUser!.address,
-            isVerified: currentUser!.isVerified,
-            completedTasks: currentUser!.completedTasks + 1,
-            createdAt: currentUser!.createdAt,
-            lastActive: currentUser!.lastActive,
-            avgResponseMinutes: currentUser!.avgResponseMinutes,
-          );
-          _authService.setUser(updatedUser);
+          final refreshedFromBackend = await _authService.refreshCurrentUser();
+          if (!refreshedFromBackend && currentUser != null) {
+            final updatedUser = User(
+              id: currentUser!.id,
+              name: currentUser!.name,
+              email: currentUser!.email,
+              role: currentUser!.role,
+              phone: currentUser!.phone,
+              address: currentUser!.address,
+              isVerified: currentUser!.isVerified,
+              completedTasks: currentUser!.completedTasks + 1,
+              createdAt: currentUser!.createdAt,
+              lastActive: currentUser!.lastActive,
+              avgResponseMinutes: currentUser!.avgResponseMinutes,
+            );
+            await _authService.setUser(updatedUser);
+          }
         }
       }
 
       notifyListeners();
     } catch (e) {
-      setError('Eroare la actualizarea statusului: ${e.toString()}');
+      setError('Failed to update request status: ${e.toString()}');
       rethrow;
     } finally {
       setLoading(false);
@@ -235,7 +299,7 @@ class AppState extends ChangeNotifier {
 
   Future<void> cancelRequest(String requestId) async {
     if (currentUser == null) {
-      throw Exception('Nu ești autentificat');
+      throw Exception('Not authenticated');
     }
 
     try {
@@ -247,7 +311,7 @@ class AppState extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      setError('Eroare la anularea cererii: ${e.toString()}');
+      setError('Failed to cancel request: ${e.toString()}');
       rethrow;
     } finally {
       setLoading(false);
@@ -258,13 +322,22 @@ class AppState extends ChangeNotifier {
     return _messageService.getMessagesForRequest(requestId);
   }
 
+  Future<void> loadMessages(String requestId) async {
+    try {
+      await _messageService.loadMessagesForRequest(requestId);
+      notifyListeners();
+    } catch (e) {
+      setError('Failed to load messages: ${e.toString()}');
+    }
+  }
+
   Future<void> sendMessage(String requestId, String content) async {
     if (currentUser == null) {
-      throw Exception('Nu ești autentificat');
+      throw Exception('Not authenticated');
     }
 
     if (content.trim().isEmpty) {
-      throw Exception('Mesajul nu poate fi gol');
+      throw Exception('Message cannot be empty');
     }
 
     try {
@@ -277,7 +350,7 @@ class AppState extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      throw Exception('Eroare la trimiterea mesajului: ${e.toString()}');
+      throw Exception('Failed to send message: ${e.toString()}');
     }
   }
 
@@ -317,5 +390,11 @@ class AppState extends ChangeNotifier {
           .toSet()
           .length,
     };
+  }
+
+  @override
+  void dispose() {
+    _socketSyncService?.disconnect();
+    super.dispose();
   }
 }

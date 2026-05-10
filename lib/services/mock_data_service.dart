@@ -44,7 +44,7 @@ class MockDataService {
     return {
       'user_req_1': User(
         id: 'user_req_1',
-        name: 'Maria Popescu (78 ani)',
+        name: 'Maria Popescu (78 years old)',
         email: 'maria.popescu@email.com',
         role: UserRole.requester,
         phone: '+40 722 123 456',
@@ -56,7 +56,7 @@ class MockDataService {
       ),
       'user_req_2': User(
         id: 'user_req_2',
-        name: 'Ion Dumitrescu - 72 ani',
+        name: 'Ion Dumitrescu - 72 years old',
         email: 'ion.dumitrescu@email.com',
         role: UserRole.requester,
         phone: '+40 744 567 890',
@@ -80,7 +80,7 @@ class MockDataService {
       ),
       'user_req_4': User(
         id: 'user_req_4',
-        name: 'Vasile Popa, 45 ani',
+        name: 'Vasile Popa, 45 years old',
         email: 'vasile.popa@email.com',
         role: UserRole.requester,
         phone: '+40 766 789 012',
@@ -129,9 +129,9 @@ class MockDataService {
       Request(
         id: 'req_completed_1',
         requesterId: 'user_req_1',
-        requesterName: 'Maria Popescu (78 ani)',
+        requesterName: 'Maria Popescu (78 years old)',
         category: RequestCategory.pharmacy,
-        description: 'Medicamente pentru tensiune',
+        description: 'Blood pressure medication',
         urgency: RequestUrgency.medium,
         location: 'Farmacia Catena (0.5 km)',
         preferredTime: now.subtract(const Duration(days: 25)),
@@ -144,9 +144,9 @@ class MockDataService {
       Request(
         id: 'req_completed_2',
         requesterId: 'user_req_2',
-        requesterName: 'Ion Dumitrescu - 72 ani',
+        requesterName: 'Ion Dumitrescu - 72 years old',
         category: RequestCategory.groceries,
-        description: 'Pâine, lapte, brânză',
+        description: 'Bread, milk, cheese',
         urgency: RequestUrgency.low,
         location: 'Mega Image (0.8 km)',
         preferredTime: now.subtract(const Duration(days: 20)),
@@ -159,9 +159,9 @@ class MockDataService {
       Request(
         id: 'req_completed_3',
         requesterId: 'user_req_1',
-        requesterName: 'Maria Popescu (78 ani)',
+        requesterName: 'Maria Popescu (78 years old)',
         category: RequestCategory.checkIn,
-        description: 'Verificare - nu răspunde la telefon',
+        description: 'Check-in - not answering the phone',
         urgency: RequestUrgency.high,
         location: 'Str. Mihai Bravu nr. 23 (0.3 km)',
         preferredTime: now.subtract(const Duration(days: 18)),
@@ -174,9 +174,9 @@ class MockDataService {
       Request(
         id: 'req_completed_4',
         requesterId: 'user_req_4',
-        requesterName: 'Vasile Popa, 45 ani',
+        requesterName: 'Vasile Popa, 45 years old',
         category: RequestCategory.errands,
-        description: 'Plată facturi la ghișeu',
+        description: 'Pay bills at the counter',
         urgency: RequestUrgency.medium,
         location: 'Oficiul Poștal (1.5 km)',
         preferredTime: now.subtract(const Duration(days: 15)),
@@ -189,9 +189,9 @@ class MockDataService {
       Request(
         id: 'req_completed_5',
         requesterId: 'user_req_2',
-        requesterName: 'Ion Dumitrescu - 72 ani',
+        requesterName: 'Ion Dumitrescu - 72 years old',
         category: RequestCategory.pharmacy,
-        description: 'Insulină și medicamente pentru diabet',
+        description: 'Insulin and diabetes medication',
         urgency: RequestUrgency.high,
         location: 'Farmacia Sensiblu (1.2 km)',
         preferredTime: now.subtract(const Duration(days: 12)),
@@ -204,9 +204,9 @@ class MockDataService {
       Request(
         id: 'req_completed_6',
         requesterId: 'user_req_1',
-        requesterName: 'Maria Popescu (78 ani)',
+        requesterName: 'Maria Popescu (78 years old)',
         category: RequestCategory.groceries,
-        description: 'Cumpărături săptămânale',
+        description: 'Weekly groceries',
         urgency: RequestUrgency.medium,
         location: 'Carrefour Express (0.6 km)',
         preferredTime: now.subtract(const Duration(days: 10)),
@@ -219,9 +219,9 @@ class MockDataService {
       Request(
         id: 'req_completed_7',
         requesterId: 'user_req_4',
-        requesterName: 'Vasile Popa, 45 ani',
+        requesterName: 'Vasile Popa, 45 years old',
         category: RequestCategory.checkIn,
-        description: 'Verificare stare de sănătate',
+        description: 'Health check-in',
         urgency: RequestUrgency.medium,
         location: 'Str. Libertății nr. 78 (1.5 km)',
         preferredTime: now.subtract(const Duration(days: 8)),
@@ -234,9 +234,9 @@ class MockDataService {
       Request(
         id: 'req_completed_8',
         requesterId: 'user_req_2',
-        requesterName: 'Ion Dumitrescu - 72 ani',
+        requesterName: 'Ion Dumitrescu - 72 years old',
         category: RequestCategory.groceries,
-        description: 'Fructe și legume proaspete',
+        description: 'demo_fresh_food_description',
         urgency: RequestUrgency.low,
         location: 'Piața Obor (2 km)',
         preferredTime: now.subtract(const Duration(days: 6)),
@@ -249,9 +249,9 @@ class MockDataService {
       Request(
         id: 'req_completed_9',
         requesterId: 'user_req_1',
-        requesterName: 'Maria Popescu (78 ani)',
+        requesterName: 'Maria Popescu (78 years old)',
         category: RequestCategory.pharmacy,
-        description: 'Vitamine și suplimente',
+        description: 'demo_vitamins_description',
         urgency: RequestUrgency.low,
         location: 'Farmacia Helpnet (0.4 km)',
         preferredTime: now.subtract(const Duration(days: 4)),
@@ -264,9 +264,9 @@ class MockDataService {
       Request(
         id: 'req_completed_10',
         requesterId: 'user_req_4',
-        requesterName: 'Vasile Popa, 45 ani',
+        requesterName: 'Vasile Popa, 45 years old',
         category: RequestCategory.errands,
-        description: 'Ridicare colet de la poștă',
+        description: 'demo_post_office_description',
         urgency: RequestUrgency.medium,
         location: 'Oficiul Poștal 2 (1.8 km)',
         preferredTime: now.subtract(const Duration(days: 3)),
@@ -279,9 +279,9 @@ class MockDataService {
       Request(
         id: 'req_completed_11',
         requesterId: 'user_req_2',
-        requesterName: 'Ion Dumitrescu - 72 ani',
+        requesterName: 'Ion Dumitrescu - 72 years old',
         category: RequestCategory.checkIn,
-        description: 'Verificare după operație',
+        description: 'demo_post_surgery_description',
         urgency: RequestUrgency.high,
         location: 'Str. Dorobanți nr. 12 (0.8 km)',
         preferredTime: now.subtract(const Duration(days: 2)),
@@ -294,9 +294,9 @@ class MockDataService {
       Request(
         id: 'req_completed_12',
         requesterId: 'user_req_1',
-        requesterName: 'Maria Popescu (78 ani)',
+        requesterName: 'Maria Popescu (78 years old)',
         category: RequestCategory.groceries,
-        description: 'Pâine și produse lactate',
+        description: 'Bread and dairy products',
         urgency: RequestUrgency.medium,
         location: 'Mega Image (0.3 km)',
         preferredTime: now.subtract(const Duration(days: 1)),
@@ -309,12 +309,12 @@ class MockDataService {
       Request(
         id: 'req_1',
         requesterId: 'user_req_2',
-        requesterName: 'Ion Dumitrescu - 72 ani',
+        requesterName: 'Ion Dumitrescu - 72 years old',
         category: RequestCategory.pharmacy,
         description:
-            'Am nevoie de insulina pana la 18:00. Sunt diabetic si nu mai pot merge singur la farmacie, reteta e gata si platita',
+            'I need insulin before 6 PM. I am diabetic and cannot go to the pharmacy alone. The prescription is ready and paid.',
         urgency: RequestUrgency.high,
-        location: 'Farmacia Catena, Str. Dorobanți nr. 15 (0.8 km)',
+        location: 'Catena Pharmacy, Dorobanți Street no. 15 (0.8 km)',
         preferredTime: now.add(const Duration(hours: 2, minutes: 7)),
         status: RequestStatus.open,
         createdAt: now.subtract(const Duration(minutes: 9)),
@@ -325,7 +325,7 @@ class MockDataService {
         requesterName: 'Elena Radu',
         category: RequestCategory.checkIn,
         description:
-            'Bunica mea (Maria, 82 ani) nu raspunde la telefon de 2 zile. Sunt ingrijorata.. poate trece cineva sa bata la usa?',
+            'My grandmother, Maria, is 82 and has not answered the phone for two days. I am worried. Could someone knock on her door?',
         urgency: RequestUrgency.high,
         location: 'Str. Florilor nr. 45, Ap. 2B (1.2 km)',
         preferredTime: now.add(const Duration(minutes: 33)),
@@ -333,16 +333,16 @@ class MockDataService {
         createdAt: now.subtract(const Duration(minutes: 19)),
         isProxy: true,
         proxyForName: 'Maria Radu',
-        proxyRelationship: 'Bunică',
-        proxyNotes: 'Nu aude bine - bateți tare în ușă',
+        proxyRelationship: 'Grandmother',
+        proxyNotes: 'Hard of hearing - please knock loudly',
       ),
       Request(
         id: 'req_3',
         requesterId: 'user_req_1',
-        requesterName: 'Maria Popescu (78 ani)',
+        requesterName: 'Maria Popescu (78 years old)',
         category: RequestCategory.groceries,
         description:
-            'As avea nevoie de paine, lapte si oua. Nu mai pot sa car pungi grele pe scari',
+            'I need bread, milk, and eggs. I cannot carry heavy bags up the stairs anymore.',
         urgency: RequestUrgency.medium,
         location: 'Mega Image, Str. Mihai Bravu (0.3 km)',
         preferredTime: now.add(const Duration(hours: 3, minutes: 12)),
@@ -354,29 +354,29 @@ class MockDataService {
       Request(
         id: 'req_4',
         requesterId: 'user_req_4',
-        requesterName: 'Vasile Popa, 45 ani',
+        requesterName: 'Vasile Popa, 45 years old',
         category: RequestCategory.errands,
         description:
-            'Tatal meu (78 ani) trebuie sa duca un colet la posta dar nu poate merge singur. Coletul e pregatit',
+            'My father is 78 and needs to take a parcel to the post office, but he cannot go alone. The parcel is ready.',
         urgency: RequestUrgency.low,
-        location: 'Oficiul Poștal 1 (1.5 km)',
+        location: 'Post Office 1 (1.5 km)',
         preferredTime: now.add(const Duration(days: 1, minutes: 23)),
         status: RequestStatus.open,
         createdAt: now.subtract(const Duration(hours: 2, minutes: 54)),
         isProxy: true,
         proxyForName: 'Vasile Popa Sr.',
-        proxyRelationship: 'Tată',
-        proxyNotes: 'Coletul e pregătit la ușă',
+        proxyRelationship: 'Father',
+        proxyNotes: 'The parcel is ready by the door',
       ),
       Request(
         id: 'req_5',
         requesterId: 'user_req_1',
-        requesterName: 'Maria Popescu (78 ani)',
+        requesterName: 'Maria Popescu (78 years old)',
         category: RequestCategory.pharmacy,
         description:
-            'Medicamentele mele de saptamana asta. Reteta e gata la farmacie',
+            'I need this week’s medication. The prescription is ready at the pharmacy.',
         urgency: RequestUrgency.medium,
-        location: 'Sensiblu, Piața Unirii',
+        location: 'Sensiblu, Unirii Square',
         preferredTime: now.subtract(const Duration(days: 2, minutes: 17)),
         status: RequestStatus.completed,
         volunteerId: 'user_vol_2',
@@ -404,7 +404,7 @@ class MockDataService {
             requestId: requestId,
             senderId: 'system',
             senderName: 'System',
-            content: 'Cererea a fost acceptată',
+            content: 'request_accepted',
             timestamp: now.subtract(const Duration(minutes: 49)),
             isRead: true,
             isSystemMessage: true,
@@ -413,8 +413,8 @@ class MockDataService {
             id: 'msg_req3_1',
             requestId: requestId,
             senderId: 'user_req_1',
-            senderName: 'Maria Popescu (78 ani)',
-            content: 'Buna Andrei! Multumesc mult ca m-ai ales 😊',
+            senderName: 'Maria Popescu (78 years old)',
+            content: 'Hi Andrei! Thank you so much for choosing me.',
             timestamp: now.subtract(const Duration(minutes: 47)),
             isRead: true,
           ),
@@ -423,7 +423,8 @@ class MockDataService {
             requestId: requestId,
             senderId: 'user_vol_1',
             senderName: 'Andrei Ionescu',
-            content: 'Cu drag! Ajung pe la 18:30. Ce paine vreti?',
+            content:
+                'Gladly. I will arrive around 6:30 PM. What kind of bread would you like?',
             timestamp: now.subtract(const Duration(minutes: 43)),
             isRead: true,
           ),
@@ -433,7 +434,7 @@ class MockDataService {
             senderId: 'user_req_1',
             senderName: 'Maria Popescu',
             content:
-                'Paine alba, o cutie de 10 oua si lapte 1.5%. Iti las banii la usa',
+                'White bread, a box of 10 eggs, and 1.5% milk. I will leave the money by the door.',
             timestamp: now.subtract(const Duration(minutes: 39)),
             isRead: true,
           ),
@@ -442,7 +443,7 @@ class MockDataService {
             requestId: requestId,
             senderId: 'user_vol_1',
             senderName: 'Andrei Ionescu',
-            content: 'Ok, am notat! Ne vedem atunci 👍',
+            content: 'Got it. See you then.',
             timestamp: now.subtract(const Duration(minutes: 37)),
             isRead: true,
           ),
@@ -451,7 +452,7 @@ class MockDataService {
             requestId: requestId,
             senderId: 'user_req_1',
             senderName: 'Maria Popescu',
-            content: 'Multumesc mult! Sunt acasa',
+            content: 'Thank you so much. I am home.',
             timestamp: now.subtract(const Duration(minutes: 34)),
             isRead: true,
           ),
@@ -467,7 +468,7 @@ class MockDataService {
             requestId: requestId,
             senderId: 'system',
             senderName: 'System',
-            content: 'Cererea a fost acceptată',
+            content: 'request_accepted',
             timestamp:
                 now.subtract(const Duration(days: 2, hours: 3, minutes: 7)),
             isRead: true,
@@ -478,7 +479,7 @@ class MockDataService {
             requestId: requestId,
             senderId: 'user_req_1',
             senderName: 'Maria Popescu',
-            content: 'Buna Ana! Reteta e pe numele meu, Maria Popescu',
+            content: 'Hi Ana. The prescription is under my name, Maria Popescu.',
             timestamp:
                 now.subtract(const Duration(days: 2, hours: 3, minutes: 2)),
             isRead: true,
@@ -488,7 +489,7 @@ class MockDataService {
             requestId: requestId,
             senderId: 'system',
             senderName: 'System',
-            content: 'Cererea este acum în lucru',
+            content: 'request_in_progress',
             timestamp:
                 now.subtract(const Duration(days: 2, hours: 2, minutes: 53)),
             isRead: true,
@@ -500,7 +501,7 @@ class MockDataService {
             senderId: 'user_vol_2',
             senderName: 'Ana Gheorghe',
             content:
-                'Buna ziua! Am ajuns la farmacie. Cam cat trebuie sa astept?',
+                'Hello. I have reached the pharmacy. About how long should I expect to wait?',
             timestamp:
                 now.subtract(const Duration(days: 2, hours: 2, minutes: 48)),
             isRead: true,
@@ -509,8 +510,8 @@ class MockDataService {
             id: 'msg_req5_3',
             requestId: requestId,
             senderId: 'user_req_1',
-            senderName: 'Maria Popescu (78 ani)',
-            content: 'De obicei 10-15 minute. Imi pare rau de asteptare!',
+            senderName: 'Maria Popescu (78 years old)',
+            content: 'Usually 10 to 15 minutes. I am sorry about the wait.',
             timestamp:
                 now.subtract(const Duration(days: 2, hours: 2, minutes: 41)),
             isRead: true,
@@ -520,7 +521,8 @@ class MockDataService {
             requestId: requestId,
             senderId: 'user_vol_2',
             senderName: 'Ana Gheorghe',
-            content: 'Nicio problema! Am luat medicamentele, vin spre dvs',
+            content:
+                'No problem. I picked up the medication and I am heading to you now.',
             timestamp:
                 now.subtract(const Duration(days: 2, hours: 2, minutes: 27)),
             isRead: true,
@@ -529,8 +531,8 @@ class MockDataService {
             id: 'msg_req5_5',
             requestId: requestId,
             senderId: 'user_req_1',
-            senderName: 'Maria Popescu (78 ani)',
-            content: 'Super! Te astept. Multumesc mult! 🙏',
+            senderName: 'Maria Popescu (78 years old)',
+            content: 'Great, I will wait for you. Thank you so much.',
             timestamp:
                 now.subtract(const Duration(days: 2, hours: 2, minutes: 22)),
             isRead: true,
@@ -540,7 +542,7 @@ class MockDataService {
             requestId: requestId,
             senderId: 'user_vol_2',
             senderName: 'Ana Gheorghe',
-            content: 'Am ajuns! Sunt la usa',
+            content: 'I arrived. I am at the door.',
             timestamp:
                 now.subtract(const Duration(days: 2, hours: 2, minutes: 4)),
             isRead: true,
@@ -550,7 +552,7 @@ class MockDataService {
             requestId: requestId,
             senderId: 'system',
             senderName: 'System',
-            content: 'Cererea a fost finalizată',
+            content: 'request_completed',
             timestamp:
                 now.subtract(const Duration(days: 2, hours: 1, minutes: 58)),
             isRead: true,
@@ -575,30 +577,30 @@ class MockDataService {
       case RequestCategory.pharmacy:
         if (request.urgency == RequestUrgency.high) {
           content =
-              'Multumesc din suflet ca m-ai ales! Chiar am nevoie urgent, reteta e gata si platita la farmacie';
+              'Thank you so much for choosing me. I really need this urgently, and the prescription is ready and paid at the pharmacy.';
         } else {
           content =
-              'Iti multumesc mult! Reteta e pe numele meu, ${request.requesterName.split(',').first.split('(').first.trim()}. Astept sa aud de tine!';
+              'Thank you so much. The prescription is under my name, ${request.requesterName.split(',').first.split('(').first.trim()}. I will wait to hear from you.';
         }
         break;
       case RequestCategory.checkIn:
         if (request.isProxy) {
           content =
-              'Iti multumesc din inima! Sunt foarte ingrijorata pentru ea. E la parter, apartament 2B. Te rog sa bati tare, nu aude bine';
+              'Thank you from the heart. I am very worried about her. She is on the ground floor, apartment 2B. Please knock loudly because she does not hear well.';
         } else {
-          content = 'Multumesc mult! Sunt acasa toata ziua si astept';
+          content = 'Thank you so much. I am home all day and waiting.';
         }
         break;
       case RequestCategory.groceries:
         content =
-            'Iti multumesc ca ai acceptat! ${request.description.split('.').first}. Iti las banii la usa 😊';
+            'Thank you for accepting. I will leave the money by the door.';
         break;
       case RequestCategory.errands:
         if (request.isProxy) {
           content =
-              'Multumesc mult pentru ajutor! Coletul e pregatit langa usa, e cam greu vreo 5kg. Tatal meu va fi foarte recunoscator!';
+              'Thank you so much for helping. The parcel is ready by the door. It is about 5 kg, and my father will be very grateful.';
         } else {
-          content = 'Super, multumesc! Totul e pregatit si te astept';
+          content = 'Great, thank you. Everything is ready and I will wait for you.';
         }
         break;
     }
@@ -626,29 +628,30 @@ class MockDataService {
       case RequestCategory.pharmacy:
         if (request.urgency == RequestUrgency.high) {
           content =
-              'Perfect. Ajung in 10 min la farmacie, iti dau un semn cand am ridicat-o';
+              'Perfect. I will reach the pharmacy in 10 minutes and message you once I pick it up.';
         } else {
           content =
-              'Ok! Trec pe acolo in curand. Iti scriu cand am ridicat medicamentele';
+              'Okay. I will stop by soon and message you once I pick up the medication.';
         }
         break;
       case RequestCategory.checkIn:
         if (request.isProxy) {
-          content = 'Am inteles. Plec acum, in 5 min sunt acolo';
+          content = 'I understand. I am leaving now and will be there in 5 minutes.';
         } else {
           content =
-              'Perfect! Trec imediat sa verific, iti dau un semn cand ajung';
+              'Perfect. I will check right away and message you when I arrive.';
         }
         break;
       case RequestCategory.groceries:
-        content = 'Perfect! Ce paine vrei? Si ce lapte - 1.5% sau 3.5%?';
+        content =
+            'Perfect. What kind of bread would you like? And which milk: 1.5% or 3.5%?';
         break;
       case RequestCategory.errands:
         if (request.isProxy) {
           content =
-              'Nicio problema! Pot sa car si mai mult. Trec maine dimineata pe la 10?';
+              'No problem. I can carry more than that. Could I stop by tomorrow morning around 10?';
         } else {
-          content = 'Ok! Cand ar fi cel mai bine sa trec?';
+          content = 'Okay. When would be the best time to stop by?';
         }
         break;
     }
@@ -687,8 +690,8 @@ class MockDataService {
         id: 'notif_1',
         userId: userId,
         type: NotificationType.requestAccepted,
-        title: 'Cerere acceptată',
-        message: 'Andrei a acceptat cererea ta',
+        title: 'Request accepted',
+        message: 'Andrei accepted your request',
         requestId: 'req_3',
         timestamp: now.subtract(const Duration(hours: 1)),
         isRead: false,
@@ -697,8 +700,8 @@ class MockDataService {
         id: 'notif_2',
         userId: userId,
         type: NotificationType.newMessage,
-        title: 'Mesaj nou',
-        message: 'Andrei: Cu plăcere! Ajung pe la 14:00',
+        title: 'New message',
+        message: 'Andrei: Gladly. I will arrive around 2 PM',
         requestId: 'req_3',
         timestamp: now.subtract(const Duration(minutes: 40)),
         isRead: false,
@@ -708,7 +711,7 @@ class MockDataService {
         userId: userId,
         type: NotificationType.requestCompleted,
         title: 'Gata!',
-        message: 'Medicamentele au fost ridicate',
+        message: 'The medication has been picked up',
         requestId: 'req_5',
         timestamp: now.subtract(const Duration(days: 2)),
         isRead: true,
@@ -718,3 +721,4 @@ class MockDataService {
 
   static String generateId() => _uuid.v4();
 }
+

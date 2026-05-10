@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../models/request_model.dart';
+import '../../utils/english_text.dart';
 import '../../providers/app_state.dart';
 import '../../utils/theme.dart';
 import '../../widgets/loading_overlay.dart';
@@ -25,7 +26,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   DateTime _preferredTime = DateTime.now().add(const Duration(hours: 2));
   bool _isLoading = false;
   bool _isProxy = false;
-  String _proxyRelationship = 'Bunică/Bunic';
+  String _proxyRelationship = 'grandparent';
 
   @override
   void dispose() {
@@ -42,7 +43,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     if (_descriptionController.text.trim().length < 10) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Descrierea trebuie să aibă minim 10 caractere'),
+          content: Text('The description must be at least 10 characters'),
           backgroundColor: AppTheme.errorColor,
         ),
       );
@@ -52,7 +53,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     if (_locationController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Introdu locația'),
+          content: Text('Enter the location'),
           backgroundColor: AppTheme.errorColor,
         ),
       );
@@ -62,7 +63,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     if (_preferredTime.isBefore(DateTime.now())) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Data și ora trebuie să fie în viitor'),
+          content: Text('Date and time must be in the future'),
           backgroundColor: AppTheme.errorColor,
         ),
       );
@@ -73,7 +74,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       if (_proxyNameController.text.trim().isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Introdu numele persoanei pentru care ceri ajutor'),
+            content: Text(
+              'Enter the name of the person you are requesting help for',
+            ),
             backgroundColor: AppTheme.errorColor,
           ),
         );
@@ -102,7 +105,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Cerere creată cu succes!'),
+            content: Text('Request created successfully!'),
             backgroundColor: AppTheme.secondaryColor,
             duration: Duration(seconds: 2),
           ),
@@ -113,7 +116,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Eroare: ${e.toString()}'),
+            content: Text(friendlyErrorMessage(e.toString())),
             backgroundColor: AppTheme.errorColor,
           ),
         );
@@ -131,7 +134,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       isLoading: _isLoading,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Creează cerere'),
+          title: const Text('Create request'),
         ),
         body: Form(
           key: _formKey,
@@ -139,12 +142,12 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
             padding: const EdgeInsets.all(16),
             children: [
               Text(
-                'Cu ce te putem ajuta?',
+                'How can we help?',
                 style: Theme.of(context).textTheme.displaySmall,
               ),
               const SizedBox(height: 24),
               Text(
-                'Ce fel de ajutor',
+                'What kind of help',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -155,7 +158,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                 children: RequestCategory.values.map((category) {
                   final isSelected = _category == category;
                   return ChoiceChip(
-                    label: Text(_getCategoryLabel(category)),
+                    label: Text(category.label),
                     selected: isSelected,
                     onSelected: (selected) {
                       setState(() => _category = category);
@@ -168,17 +171,17 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(
-                  labelText: 'Descriere',
-                  hintText: 'ex: Am nevoie de pâine, lapte și ouă',
-                  helperText: 'Minim 10 caractere',
+                  labelText: 'Description',
+                  hintText: 'e.g. I need bread, milk, and eggs',
+                  helperText: 'Minimum 10 characters',
                 ),
                 maxLines: 3,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Descrierea este obligatorie';
+                    return 'Description is required';
                   }
                   if (value.trim().length < 10) {
-                    return 'Minim 10 caractere';
+                    return 'Minimum 10 characters';
                   }
                   return null;
                 },
@@ -187,20 +190,20 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
               TextFormField(
                 controller: _locationController,
                 decoration: const InputDecoration(
-                  labelText: 'Locație',
-                  hintText: 'ex: Farmacia Catena, Str. Dorobanți',
+                  labelText: 'Location',
+                  hintText: 'e.g. Catena Pharmacy, Dorobanți Street',
                   prefixIcon: Icon(Icons.location_on),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Locația este obligatorie';
+                    return 'Location is required';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 24),
               Text(
-                'Cât de urgent',
+                'How urgent is it?',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -211,20 +214,20 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                 children: RequestUrgency.values.map((urgency) {
                   final isSelected = _urgency == urgency;
                   return ChoiceChip(
-                    label: Text(_getUrgencyLabel(urgency)),
+                    label: Text(urgency.label),
                     selected: isSelected,
                     onSelected: (selected) {
                       setState(() => _urgency = urgency);
                     },
                     selectedColor:
-                        AppTheme.getUrgencyColor(_getUrgencyLabel(urgency))
+                        AppTheme.getUrgencyColor(urgency)
                             .withValues(alpha: 0.2),
                   );
                 }).toList(),
               ),
               const SizedBox(height: 24),
               Text(
-                'Când ai vrea',
+                'When would you like it?',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -234,7 +237,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.access_time),
                   title: Text(
-                    '${_preferredTime.day}/${_preferredTime.month}/${_preferredTime.year} la ${_preferredTime.hour}:${_preferredTime.minute.toString().padLeft(2, '0')}',
+                    formatDateTimeText(_preferredTime),
                   ),
                   trailing: const Icon(Icons.edit),
                   onTap: () async {
@@ -277,7 +280,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              'E pentru altcineva',
+                              'It is for someone else',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -299,15 +302,15 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                         TextFormField(
                           controller: _proxyNameController,
                           decoration: const InputDecoration(
-                            labelText: 'Numele persoanei',
-                            hintText: 'ex: Maria Popescu',
+                            labelText: 'Person’s name',
+                            hintText: 'e.g. Maria Popescu',
                             filled: true,
                             fillColor: Colors.white,
                           ),
                           validator: (value) {
                             if (_isProxy &&
                                 (value == null || value.trim().isEmpty)) {
-                              return 'Numele este obligatoriu';
+                              return 'Name is required';
                             }
                             return null;
                           },
@@ -316,24 +319,29 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                         DropdownButtonFormField<String>(
                           initialValue: _proxyRelationship,
                           decoration: const InputDecoration(
-                            labelText: 'Relație',
+                            labelText: 'Relationship',
                             filled: true,
                             fillColor: Colors.white,
                           ),
                           items: const [
                             DropdownMenuItem(
-                                value: 'Bunică/Bunic',
-                                child: Text('Bunică/Bunic')),
+                                value: 'grandparent',
+                                child: Text('Grandparent')),
                             DropdownMenuItem(
-                                value: 'Părinte', child: Text('Părinte')),
+                                value: 'parent',
+                                child: Text('Parent')),
                             DropdownMenuItem(
-                                value: 'Vecin', child: Text('Vecin')),
+                                value: 'neighbor',
+                                child: Text('Neighbor')),
                             DropdownMenuItem(
-                                value: 'Pacient', child: Text('Pacient')),
+                                value: 'patient',
+                                child: Text('Patient')),
                             DropdownMenuItem(
-                                value: 'Prieten', child: Text('Prieten')),
+                                value: 'friend',
+                                child: Text('Friend')),
                             DropdownMenuItem(
-                                value: 'Altceva', child: Text('Altceva')),
+                                value: 'other',
+                                child: Text('Other')),
                           ],
                           onChanged: (value) {
                             if (value != null) {
@@ -345,8 +353,8 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                         TextFormField(
                           controller: _proxyNotesController,
                           decoration: const InputDecoration(
-                            labelText: 'Notițe (opțional)',
-                            hintText: 'ex: nu aude bine, n-are telefon',
+                            labelText: 'Notes (optional)',
+                            hintText: 'e.g. hard of hearing, does not have a phone',
                             filled: true,
                             fillColor: Colors.white,
                           ),
@@ -362,7 +370,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _submit,
-                  child: const Text('Creează cerere'),
+                  child: const Text('Create request'),
                 ),
               ),
             ],
@@ -370,29 +378,5 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
         ),
       ),
     );
-  }
-
-  String _getCategoryLabel(RequestCategory category) {
-    switch (category) {
-      case RequestCategory.groceries:
-        return 'Cumpărături';
-      case RequestCategory.pharmacy:
-        return 'Farmacie';
-      case RequestCategory.errands:
-        return 'Treburi';
-      case RequestCategory.checkIn:
-        return 'Verificare';
-    }
-  }
-
-  String _getUrgencyLabel(RequestUrgency urgency) {
-    switch (urgency) {
-      case RequestUrgency.low:
-        return 'Normală';
-      case RequestUrgency.medium:
-        return 'Medie';
-      case RequestUrgency.high:
-        return 'Urgentă';
-    }
   }
 }

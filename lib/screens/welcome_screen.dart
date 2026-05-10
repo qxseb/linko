@@ -32,7 +32,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      'Linko',
+                      'LinkO',
                       style:
                           Theme.of(context).textTheme.headlineMedium!.copyWith(
                                 fontWeight: FontWeight.bold,
@@ -42,7 +42,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 48),
                 Text(
-                  'Mulți oameni în vârstă din România au nevoie de ajutor zilnic.',
+                  'Many older people in Romania need a bit of help every day.',
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                         fontWeight: FontWeight.bold,
                         height: 1.3,
@@ -50,7 +50,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Cumpărături, medicamente, sau doar o verificare că sunt bine.',
+                  'Groceries, medicine, errands, or just a check-in to know they are okay.',
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: AppTheme.textSecondary,
                         height: 1.5,
@@ -95,7 +95,7 @@ class WelcomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Chiar acum',
+                            'Right now',
                             style:
                                 Theme.of(context).textTheme.bodySmall!.copyWith(
                                       color: AppTheme.textSecondary,
@@ -127,7 +127,7 @@ class WelcomeScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      'Doamna Elena, 78 ani',
+                                      'Maria, 72',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
@@ -145,7 +145,7 @@ class WelcomeScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  'Are nevoie de medicamente până la ora 18:00',
+                                  'Needs medicine before 6 PM',
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ],
@@ -163,7 +163,7 @@ class WelcomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Farmacia Catena, Str. Dorobanți (0.8 km)',
+                            'Catena Pharmacy, Dorobanți Street (0.8 km)',
                             style:
                                 Theme.of(context).textTheme.bodySmall!.copyWith(
                                       color: AppTheme.textSecondary,
@@ -212,7 +212,7 @@ class WelcomeScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Verificare & Siguranță',
+                                  'Verified & safe',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium!
@@ -223,7 +223,7 @@ class WelcomeScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  'Toți utilizatorii sunt verificați',
+                                  'Every user is checked before they can help',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
@@ -259,7 +259,7 @@ class WelcomeScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '200+ persoane ajutate',
+                                  '200+ people helped',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium!
@@ -270,7 +270,7 @@ class WelcomeScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  'Doar în luna aceasta',
+                                  'This month only',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
@@ -293,7 +293,7 @@ class WelcomeScreen extends StatelessWidget {
                     onPressed: () =>
                         context.go('/auth?role=requester&mode=signup'),
                     icon: const Icon(Icons.pan_tool, size: 24),
-                    label: const Text('Am nevoie de ajutor'),
+                    label: const Text('I need help'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 18),
                       shape: RoundedRectangleBorder(
@@ -310,7 +310,7 @@ class WelcomeScreen extends StatelessWidget {
                     onPressed: () =>
                         context.go('/auth?role=volunteer&mode=signup'),
                     icon: const Icon(Icons.favorite, size: 24),
-                    label: const Text('Vreau să ajut'),
+                    label: const Text('I want to help'),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 18),
                       shape: RoundedRectangleBorder(
@@ -329,7 +329,7 @@ class WelcomeScreen extends StatelessWidget {
                           horizontal: 24, vertical: 12),
                     ),
                     child: Text(
-                      'Ai deja cont? Intră în cont',
+                      'Already have an account? Sign in',
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             color: AppTheme.primaryColor,
                             fontWeight: FontWeight.w600,

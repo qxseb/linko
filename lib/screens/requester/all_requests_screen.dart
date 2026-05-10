@@ -11,7 +11,7 @@ class AllRequestsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Toate cererile')),
+      appBar: AppBar(title: const Text('All requests')),
       body: Consumer<AppState>(
         builder: (context, appState, _) {
           final requests = appState.getMyRequests();
@@ -19,12 +19,12 @@ class AllRequestsScreen extends StatelessWidget {
           if (requests.isEmpty) {
             return EmptyState(
               icon: Icons.inbox,
-              title: 'Nicio cerere încă',
-              message: 'Creează prima cerere pentru a începe',
+              title: 'No requests yet',
+              message: 'Create your first request to get started',
               action: ElevatedButton.icon(
                 onPressed: () => context.push('/requester/create-request'),
                 icon: const Icon(Icons.add),
-                label: const Text('Creează cerere'),
+                label: const Text('Create request'),
               ),
             );
           }

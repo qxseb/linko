@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/message_model.dart';
 import '../providers/app_state.dart';
+import '../utils/english_text.dart';
 import '../utils/theme.dart';
-import '../utils/formatters.dart';
 
 class ChatScreen extends StatefulWidget {
   final String requestId;
@@ -17,6 +17,28 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (mounted) {
+        context.read<AppState>().loadMessages(widget.requestId);
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant ChatScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.requestId != widget.requestId) {
+      Future.microtask(() {
+        if (mounted) {
+          context.read<AppState>().loadMessages(widget.requestId);
+        }
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -38,7 +60,11 @@ class _ChatScreenState extends State<ChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Eroare: ${e.toString()}')));
+        ).showSnackBar(
+          SnackBar(
+            content: Text(friendlyErrorMessage(e.toString())),
+          ),
+        );
       }
     }
   }
@@ -66,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
         if (request == null || currentUser == null) {
           return Scaffold(
             appBar: AppBar(title: const Text('Chat')),
-            body: const Center(child: Text('Nu merge chat-ul')),
+            body: const Center(child: Text('Chat is not available')),
           );
         }
 
@@ -76,7 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
         final otherUser =
             otherUserId != null ? appState.getUserById(otherUserId) : null;
         final otherUserName = currentUser.id == request.requesterId
-            ? request.volunteerName ?? 'Voluntar'
+            ? request.volunteerName ?? 'Volunteer'
             : request.requesterName;
 
         return Scaffold(
@@ -125,18 +151,18 @@ class _ChatScreenState extends State<ChatScreen> {
                       Row(
                         children: [
                           Text(
-                            request.categoryLabel,
+                            request.category.label,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           if (otherUser != null) ...[
                             const SizedBox(width: 8),
                             Text(
-                              '•',
+                              '|',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              otherUser.lastActiveLabel,
+                              otherUser.lastActiveText,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
@@ -165,11 +191,12 @@ class _ChatScreenState extends State<ChatScreen> {
                             Icon(
                               Icons.chat_bubble_outline,
                               size: 64,
-                              color: AppTheme.textSecondary.withValues(alpha: 0.5),
+                              color:
+                                  AppTheme.textSecondary.withValues(alpha: 0.5),
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              'Niciun mesaj încă',
+                              'No messages yet',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
@@ -177,7 +204,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Scrie primul mesaj',
+                              'Write the first message',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
@@ -212,7 +239,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: TextField(
                           controller: _messageController,
                           decoration: InputDecoration(
-                            hintText: 'Scrie un mesaj...',
+                            hintText: 'Write a message...',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(24),
                             ),
@@ -301,14 +328,14 @@ class _MessageBubble extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      message.content,
+                      messageContentText(message),
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: isMe ? Colors.white : AppTheme.textPrimary,
                           ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      Formatters.formatTime(message.timestamp),
+                      formatTimeText(message.timestamp),
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: isMe
                                 ? Colors.white.withValues(alpha: 0.8)
@@ -353,7 +380,7 @@ class _SystemMessageBubble extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                message.content,
+                messageContentText(message),
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: AppTheme.textSecondary,
                       fontWeight: FontWeight.w500,

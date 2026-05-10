@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../models/request_model.dart';
 import '../../providers/app_state.dart';
+import '../../utils/english_text.dart';
 import '../../utils/theme.dart';
 import '../../utils/formatters.dart';
 
@@ -32,13 +33,13 @@ class VolunteerTaskDetail extends StatelessWidget {
 
         if (request == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Detalii sarcină')),
-            body: const Center(child: Text('Sarcină negăsită')),
+            appBar: AppBar(title: const Text('Task details')),
+            body: const Center(child: Text('Task not found')),
           );
         }
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Detalii sarcină')),
+          appBar: AppBar(title: const Text('Task details')),
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -69,7 +70,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  request.categoryLabel,
+                                  request.category.label,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.displaySmall,
@@ -82,18 +83,18 @@ class VolunteerTaskDetail extends StatelessWidget {
                                   ),
                                   decoration: BoxDecoration(
                                     color: AppTheme.getStatusColor(
-                                      request.statusLabel,
+                                      request.status,
                                     ).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    request.statusLabel,
+                                    request.status.label,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall!
                                         .copyWith(
                                           color: AppTheme.getStatusColor(
-                                            request.statusLabel,
+                                            request.status,
                                           ),
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -113,7 +114,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                       const SizedBox(height: 16),
                       _DetailRow(
                         icon: Icons.location_on,
-                        label: 'Locație',
+                        label: 'Location',
                         value: request.location,
                       ),
                       const SizedBox(height: 16),
@@ -167,7 +168,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                                       .copyWith(fontWeight: FontWeight.w600),
                                 ),
                                 Text(
-                                  'Membru verificat',
+                                  'Verified member',
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ],
@@ -197,14 +198,14 @@ class VolunteerTaskDetail extends StatelessWidget {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Începută'),
+                            content: Text('Started'),
                             duration: Duration(seconds: 1),
                           ),
                         );
                       }
                     },
                     icon: const Icon(Icons.play_arrow),
-                    label: const Text('Începe'),
+                    label: const Text('Start'),
                   ),
                 ),
               if (request.status == RequestStatus.inProgress)
@@ -258,7 +259,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 24),
                                   Text(
-                                    'Ai ajutat această persoană!',
+                                    'You helped this person!',
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!
@@ -281,7 +282,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    'îți mulțumește din suflet',
+                                    'is truly grateful',
                                     style:
                                         Theme.of(context).textTheme.bodyLarge,
                                     textAlign: TextAlign.center,
@@ -309,7 +310,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'Impactul tău',
+                                              'Your impact',
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall!
@@ -319,7 +320,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                                                   ),
                                             ),
                                             Text(
-                                              '$totalHelped ${totalHelped == 1 ? 'persoană ajutată' : 'persoane ajutate'}',
+                                              '$totalHelped ${totalHelped == 1 ? 'person helped' : 'people helped'}',
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .titleMedium!
@@ -357,7 +358,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                       }
                     },
                     icon: const Icon(Icons.check),
-                    label: const Text('Finalizează'),
+                    label: const Text('Finish'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.secondaryColor,
                     ),
@@ -369,7 +370,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () => context.push('/volunteer/chat/$requestId'),
                   icon: const Icon(Icons.message),
-                  label: const Text('Scrie mesaj'),
+                  label: const Text('Write message'),
                 ),
               ),
             ],

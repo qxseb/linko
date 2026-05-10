@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 import '../providers/app_state.dart';
+import '../utils/english_text.dart';
 import '../utils/theme.dart';
 import '../widgets/loading_overlay.dart';
 
@@ -118,7 +119,7 @@ class _AuthScreenState extends State<AuthScreen>
     setState(() => _errorMessage = null);
 
     if (_selectedRole == null) {
-      setState(() => _errorMessage = 'Selectează rolul tău');
+      setState(() => _errorMessage = 'Choose your role');
       return;
     }
 
@@ -128,19 +129,7 @@ class _AuthScreenState extends State<AuthScreen>
 
     try {
       if (_isLogin) {
-        final validEmails = [
-          'maria.popescu@email.com',
-          'andrei.ionescu@email.com',
-        ];
-
         final email = _emailController.text.trim().toLowerCase();
-        if (!validEmails.contains(email)) {
-          setState(() => _errorMessage =
-              'Email-ul nu există în sistem. Încearcă unul din email-urile demo:\n'
-                  '• maria.popescu@email.com (solicitant)\n'
-                  '• andrei.ionescu@email.com (voluntar)');
-          return;
-        }
 
         await appState.login(
           email,
@@ -161,7 +150,9 @@ class _AuthScreenState extends State<AuthScreen>
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _errorMessage = e.toString());
+        setState(
+          () => _errorMessage = friendlyErrorMessage(e.toString()),
+        );
       }
     }
   }
@@ -177,7 +168,7 @@ class _AuthScreenState extends State<AuthScreen>
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () => context.go('/'),
-                tooltip: 'Înapoi',
+                tooltip: 'Back',
               ),
               elevation: 0,
               backgroundColor: Colors.transparent,
@@ -194,7 +185,7 @@ class _AuthScreenState extends State<AuthScreen>
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          _isLogin ? 'Bine ai revenit!' : 'Hai să începem',
+                          _isLogin ? 'Welcome back!' : 'Let’s get started',
                           style: Theme.of(context)
                               .textTheme
                               .headlineMedium
@@ -205,8 +196,8 @@ class _AuthScreenState extends State<AuthScreen>
                         const SizedBox(height: 8),
                         Text(
                           _isLogin
-                              ? 'Intră rapid în cont'
-                              : 'Creează-ți contul în 15 secunde',
+                              ? 'Sign in quickly'
+                              : 'Create your account in 15 seconds',
                           style:
                               Theme.of(context).textTheme.bodyLarge!.copyWith(
                                     color: AppTheme.textSecondary,
@@ -214,7 +205,7 @@ class _AuthScreenState extends State<AuthScreen>
                         ),
                         const SizedBox(height: 32),
                         Text(
-                          'Selectează rolul',
+                          'Choose your role',
                           style:
                               Theme.of(context).textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.w600,
@@ -226,7 +217,7 @@ class _AuthScreenState extends State<AuthScreen>
                             Expanded(
                               child: _RoleCard(
                                 icon: Icons.pan_tool,
-                                label: 'Am nevoie\nde ajutor',
+                                label: 'I need\nhelp',
                                 isSelected: _selectedRole == 'requester',
                                 onTap: () =>
                                     setState(() => _selectedRole = 'requester'),
@@ -236,7 +227,7 @@ class _AuthScreenState extends State<AuthScreen>
                             Expanded(
                               child: _RoleCard(
                                 icon: Icons.favorite,
-                                label: 'Vreau să\najut',
+                                label: 'I want\nto help',
                                 isSelected: _selectedRole == 'volunteer',
                                 onTap: () =>
                                     setState(() => _selectedRole = 'volunteer'),
@@ -250,8 +241,8 @@ class _AuthScreenState extends State<AuthScreen>
                             controller: _nameController,
                             focusNode: _nameFocus,
                             decoration: InputDecoration(
-                              labelText: 'Nume',
-                              hintText: 'ex: Ion Popescu',
+                              labelText: 'Name',
+                              hintText: 'e.g. John Smith',
                               prefixIcon: const Icon(Icons.person_outline),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -261,10 +252,10 @@ class _AuthScreenState extends State<AuthScreen>
                             onFieldSubmitted: (_) => _emailFocus.requestFocus(),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return 'Introdu numele';
+                                return 'Enter your name';
                               }
                               if (value.trim().length < 2) {
-                                return 'Prea scurt';
+                                return 'Enter your name';
                               }
                               return null;
                             },
@@ -276,7 +267,7 @@ class _AuthScreenState extends State<AuthScreen>
                           focusNode: _emailFocus,
                           decoration: InputDecoration(
                             labelText: 'Email',
-                            hintText: 'ex: ion@email.com',
+                            hintText: 'e.g. john@email.com',
                             prefixIcon: const Icon(Icons.email_outlined),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -288,10 +279,10 @@ class _AuthScreenState extends State<AuthScreen>
                               _passwordFocus.requestFocus(),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Introdu email-ul';
+                              return 'Enter your email';
                             }
                             if (!value.contains('@')) {
-                              return 'Email invalid';
+                              return 'Enter a valid email address';
                             }
                             return null;
                           },
@@ -301,8 +292,8 @@ class _AuthScreenState extends State<AuthScreen>
                           controller: _passwordController,
                           focusNode: _passwordFocus,
                           decoration: InputDecoration(
-                            labelText: 'Parolă',
-                            hintText: _isLogin ? '' : 'Min. 6 caractere',
+                            labelText: 'Password',
+                            hintText: _isLogin ? '' : 'Min. 6 characters',
                             prefixIcon: const Icon(Icons.lock_outline),
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -331,10 +322,10 @@ class _AuthScreenState extends State<AuthScreen>
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Introdu parola';
+                              return 'Enter your password';
                             }
                             if (!_isLogin && value.length < 6) {
-                              return 'Min. 6 caractere';
+                              return 'Password must be at least 6 characters';
                             }
                             return null;
                           },
@@ -345,7 +336,7 @@ class _AuthScreenState extends State<AuthScreen>
                             controller: _confirmPasswordController,
                             focusNode: _confirmPasswordFocus,
                             decoration: InputDecoration(
-                              labelText: 'Confirmă parola',
+                              labelText: 'Confirm password',
                               prefixIcon: const Icon(Icons.lock_outline),
                               suffixIcon: IconButton(
                                 icon: Icon(
@@ -367,7 +358,7 @@ class _AuthScreenState extends State<AuthScreen>
                             onFieldSubmitted: (_) => _submit(),
                             validator: (value) {
                               if (value != _passwordController.text) {
-                                return 'Parolele nu se potrivesc';
+                                return 'Passwords do not match';
                               }
                               return null;
                             },
@@ -418,7 +409,7 @@ class _AuthScreenState extends State<AuthScreen>
                             elevation: 2,
                           ),
                           child: Text(
-                            _isLogin ? 'Intră în cont' : 'Creează cont',
+                            _isLogin ? 'Sign in' : 'Create account',
                             style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
@@ -436,8 +427,8 @@ class _AuthScreenState extends State<AuthScreen>
                             ),
                             child: Text(
                               _isLogin
-                                  ? 'Nu ai cont? Creează unul'
-                                  : 'Ai deja cont? Intră aici',
+                                  ? 'No account yet? Create one'
+                                  : 'Already have an account? Sign in here',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!

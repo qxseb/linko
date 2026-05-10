@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../models/request_model.dart';
 import '../../providers/app_state.dart';
+import '../../utils/english_text.dart';
 import '../../utils/theme.dart';
 import '../../utils/formatters.dart';
 
@@ -32,13 +33,13 @@ class VolunteerRequestDetail extends StatelessWidget {
 
         if (request == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Detalii cerere')),
-            body: const Center(child: Text('Cerere negăsită')),
+            appBar: AppBar(title: const Text('Request details')),
+            body: const Center(child: Text('Request not found')),
           );
         }
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Detalii cerere')),
+          appBar: AppBar(title: const Text('Request details')),
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -69,7 +70,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  request.categoryLabel,
+                                  request.category.label,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.displaySmall,
@@ -82,18 +83,18 @@ class VolunteerRequestDetail extends StatelessWidget {
                                   ),
                                   decoration: BoxDecoration(
                                     color: AppTheme.getUrgencyColor(
-                                      request.urgencyLabel,
+                                      request.urgency,
                                     ).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    request.urgencyLabel,
+                                    request.urgency.label,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall!
                                         .copyWith(
                                           color: AppTheme.getUrgencyColor(
-                                            request.urgencyLabel,
+                                            request.urgency,
                                           ),
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -113,7 +114,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                       const SizedBox(height: 16),
                       _DetailRow(
                         icon: Icons.location_on,
-                        label: 'Locație',
+                        label: 'Location',
                         value: request.location,
                       ),
                       const SizedBox(height: 16),
@@ -127,14 +128,14 @@ class VolunteerRequestDetail extends StatelessWidget {
                       const SizedBox(height: 16),
                       _DetailRow(
                         icon: Icons.schedule,
-                        label: 'Postată',
+                        label: 'Posted',
                         value: Formatters.formatDate(request.createdAt),
                       ),
                       if (request.isProxy) ...[
                         const Divider(height: 32),
                         _DetailRow(
                           icon: Icons.people,
-                          label: 'Cerere pentru',
+                          label: 'Request for',
                           value:
                               '${request.proxyForName} (${request.proxyRelationship})',
                         ),
@@ -142,7 +143,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                           const SizedBox(height: 16),
                           _DetailRow(
                             icon: Icons.info_outline,
-                            label: 'Notițe importante',
+                            label: 'Important notes',
                             value: request.proxyNotes!,
                           ),
                         ],
@@ -255,7 +256,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                                           ),
                                           const SizedBox(height: 24),
                                           Text(
-                                            'Ai ales să ajuți această persoană',
+                                            'You chose to help this person',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge!
@@ -278,7 +279,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                                           ),
                                           const SizedBox(height: 8),
                                           Text(
-                                            'îți mulțumește pentru ajutor',
+                                            'thanks you for helping',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium,
@@ -292,7 +293,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                                                 Navigator.of(dialogContext)
                                                     .pop();
                                               },
-                                              child: const Text('Continuă'),
+                                              child: const Text('Continue'),
                                             ),
                                           ),
                                         ],
@@ -366,7 +367,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                                       dismissDirection:
                                           DismissDirection.horizontal,
                                       action: SnackBarAction(
-                                        label: 'Răspunde',
+                                        label: 'Reply',
                                         textColor: AppTheme.primaryColor,
                                         onPressed: () {
                                           router.push('/chat/$requestId');
@@ -405,8 +406,8 @@ class VolunteerRequestDetail extends StatelessWidget {
                           )
                         : const Icon(Icons.check),
                     label: Text(appState.isLoading
-                        ? 'Se acceptă...'
-                        : 'Acceptă cererea'),
+                        ? 'Accepting...'
+                        : 'Accept request'),
                   ),
                 ),
               ],

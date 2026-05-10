@@ -21,12 +21,12 @@ class RoleSelectionScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Cum vrei să folosești aplicația?',
+                'How would you like to use the app?',
                 style: Theme.of(context).textTheme.displayMedium,
               ),
               const SizedBox(height: 8),
               Text(
-                'Alege ce vrei să faci',
+                'Choose what you want to do',
                 style: Theme.of(
                   context,
                 ).textTheme.bodyLarge!.copyWith(color: AppTheme.textSecondary),
@@ -34,17 +34,17 @@ class RoleSelectionScreen extends StatelessWidget {
               const SizedBox(height: 40),
               _RoleCard(
                 icon: Icons.help_outline,
-                title: 'Vreau ajutor',
+                title: 'I need help',
                 description:
-                    'Cere ajutor pentru cumpărături, treburi sau verificări',
+                    'Ask for help with groceries, errands, medicine, or check-ins',
                 color: AppTheme.primaryColor,
                 onTap: () => context.go('/auth?role=requester'),
               ),
               const SizedBox(height: 16),
               _RoleCard(
                 icon: Icons.volunteer_activism,
-                title: 'Vreau să ajut',
-                description: 'Oferă ajutor oamenilor din comunitate',
+                title: 'I want to help',
+                description: 'Offer support to people in your community',
                 color: AppTheme.secondaryColor,
                 onTap: () => context.go('/auth?role=volunteer'),
               ),

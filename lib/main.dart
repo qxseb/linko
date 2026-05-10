@@ -5,11 +5,11 @@ import 'router.dart';
 import 'utils/theme.dart';
 
 void main() {
-  runApp(const LinkoApp());
+  runApp(const LinkOApp());
 }
 
-class LinkoApp extends StatelessWidget {
-  const LinkoApp({super.key});
+class LinkOApp extends StatelessWidget {
+  const LinkOApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class LinkoApp extends StatelessWidget {
           final appState = Provider.of<AppState>(context);
           if (!appState.isInitialized) {
             return MaterialApp(
-              title: 'Linko',
+              title: 'LinkO',
               theme: AppTheme.lightTheme,
               debugShowCheckedModeBanner: false,
               home: const Scaffold(
@@ -32,7 +32,7 @@ class LinkoApp extends StatelessWidget {
           }
 
           return MaterialApp.router(
-            title: 'Linko',
+            title: 'LinkO',
             theme: AppTheme.lightTheme,
             routerConfig: router,
             debugShowCheckedModeBanner: false,

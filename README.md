@@ -22,6 +22,8 @@ Acest proiect a fost inițial înscris ca echipă formată din doi membri. Pe pa
 
 Ca urmare, întregul proiect, a fost realizat individual de către mine. Această înscriere reprezintă, prin urmare, munca mea individuală.
 
+---
+
 ## 📱 Despre Linko
 
 Linko este o platformă mobilă care rezolvă o problemă reală: **peste 3.5 milioane de persoane în vârstă din România au nevoie de ajutor zilnic** pentru sarcini simple dar critice (cumpărături, medicamente, treburi).
@@ -31,6 +33,7 @@ Linko este o platformă mobilă care rezolvă o problemă reală: **peste 3.5 mi
 ## 🚀 Quick Start
 
 ### Cerințe
+
 - Flutter 3.0 sau mai nou
 - Dart 3.0 sau mai nou
 
@@ -42,10 +45,12 @@ Linko este o platformă mobilă care rezolvă o problemă reală: **peste 3.5 mi
 Pentru testare rapidă, am pus la dispoziție aceste conturi:
 
 **Requester (persoană care cere ajutor):**
+
 - Email: `maria.popescu@email.com`
 - Password: any
 
 **Volunteer (persoană care oferă ajutor):**
+
 - Email: `andrei.ionescu@email.com`
 - Password: any
 
@@ -56,11 +61,13 @@ Pentru testare rapidă, am pus la dispoziție aceste conturi:
 Aplicația include date mock pentru demonstrație completă:
 
 ### Utilizatori Mock
+
 - 2 requesters (persoane care cer ajutor)
 - 3 volunteers (persoane care oferă ajutor)
 - Toți cu trust levels și statistici realiste
 
 ### Cereri Mock
+
 - 3 cereri deschise (Open)
 - 2 cereri acceptate (Accepted)
 - 2 cereri în desfășurare (InProgress)
@@ -99,6 +106,6 @@ MIT License
 
 **Construit cu ❤️ pentru Hardcore Entrepreneur 6.0**
 
-*Tema: "Incluziune pentru toți. Viitor durabil pentru fiecare."*
+_Tema: "Incluziune pentru toți. Viitor durabil pentru fiecare."_
 
 </div>

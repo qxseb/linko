@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../models/request_model.dart';
 import '../../providers/app_state.dart';
+import '../../utils/english_text.dart';
 import '../../utils/theme.dart';
 import '../../utils/formatters.dart';
 
@@ -32,14 +33,14 @@ class RequestDetailScreen extends StatelessWidget {
 
         if (request == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Detalii cerere')),
-            body: const Center(child: Text('Cerere negăsită')),
+            appBar: AppBar(title: const Text('Request details')),
+            body: const Center(child: Text('Request not found')),
           );
         }
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Detalii cerere'),
+            title: const Text('Request details'),
             actions: [
               if (request.status == RequestStatus.open)
                 IconButton(
@@ -48,18 +49,18 @@ class RequestDetailScreen extends StatelessWidget {
                     final confirm = await showDialog<bool>(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('Anulezi cererea?'),
+                        title: const Text('Cancel this request?'),
                         content: const Text(
-                          'Ești sigur că vrei să anulezi această cerere?',
+                          'Are you sure you want to cancel this request?',
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, false),
-                            child: const Text('Nu'),
+                            child: const Text('No'),
                           ),
                           TextButton(
                             onPressed: () => Navigator.pop(context, true),
-                            child: const Text('Da, anulează'),
+                            child: const Text('Yes, cancel'),
                           ),
                         ],
                       ),
@@ -105,7 +106,7 @@ class RequestDetailScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  request.categoryLabel,
+                                  request.category.label,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.displaySmall,
@@ -118,18 +119,18 @@ class RequestDetailScreen extends StatelessWidget {
                                   ),
                                   decoration: BoxDecoration(
                                     color: AppTheme.getStatusColor(
-                                      request.statusLabel,
+                                      request.status,
                                     ).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    request.statusLabel,
+                                    request.status.label,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall!
                                         .copyWith(
                                           color: AppTheme.getStatusColor(
-                                            request.statusLabel,
+                                            request.status,
                                           ),
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -143,19 +144,19 @@ class RequestDetailScreen extends StatelessWidget {
                       const Divider(height: 32),
                       _DetailRow(
                         icon: Icons.description,
-                        label: 'Descriere',
+                        label: 'Description',
                         value: request.description,
                       ),
                       const SizedBox(height: 16),
                       _DetailRow(
                         icon: Icons.location_on,
-                        label: 'Locație',
+                        label: 'Location',
                         value: request.location,
                       ),
                       const SizedBox(height: 16),
                       _DetailRow(
                         icon: Icons.access_time,
-                        label: 'Timp preferat',
+                        label: 'Preferred time',
                         value: Formatters.formatPreferredTime(
                           request.preferredTime,
                         ),
@@ -163,23 +164,23 @@ class RequestDetailScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       _DetailRow(
                         icon: Icons.priority_high,
-                        label: 'Urgență',
-                        value: request.urgencyLabel,
+                        label: 'Urgency',
+                        value: request.urgency.label,
                         valueColor: AppTheme.getUrgencyColor(
-                          request.urgencyLabel,
+                          request.urgency,
                         ),
                       ),
                       const SizedBox(height: 16),
                       _DetailRow(
                         icon: Icons.schedule,
-                        label: 'Creată',
+                        label: 'Created',
                         value: Formatters.formatDate(request.createdAt),
                       ),
                       if (request.isProxy) ...[
                         const Divider(height: 32),
                         _DetailRow(
                           icon: Icons.people,
-                          label: 'Cerere pentru',
+                          label: 'Request for',
                           value:
                               '${request.proxyForName} (${request.proxyRelationship})',
                         ),
@@ -187,7 +188,7 @@ class RequestDetailScreen extends StatelessWidget {
                           const SizedBox(height: 16),
                           _DetailRow(
                             icon: Icons.info_outline,
-                            label: 'Notițe',
+                            label: 'Notes',
                             value: request.proxyNotes!,
                           ),
                         ],
@@ -205,7 +206,7 @@ class RequestDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Voluntar',
+                          'Volunteer',
                           style: Theme.of(context).textTheme.displaySmall,
                         ),
                         const SizedBox(height: 16),
@@ -235,7 +236,7 @@ class RequestDetailScreen extends StatelessWidget {
                                         .copyWith(fontWeight: FontWeight.w600),
                                   ),
                                   Text(
-                                    'Voluntar verificat',
+                                    'Verified volunteer',
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodySmall,
@@ -263,7 +264,7 @@ class RequestDetailScreen extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: () => context.push('/requester/chat/$requestId'),
                     icon: const Icon(Icons.message),
-                    label: const Text('Scrie mesaj'),
+                    label: const Text('Write message'),
                   ),
                 ),
               ],

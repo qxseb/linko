@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../models/request_model.dart';
 import '../../providers/app_state.dart';
+import '../../utils/english_text.dart';
 import '../../utils/theme.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/request_card.dart';
@@ -23,24 +24,24 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
   String _getCategoryLabel(RequestCategory category) {
     switch (category) {
       case RequestCategory.groceries:
-        return 'Cumpărături';
+        return 'Groceries';
       case RequestCategory.pharmacy:
-        return 'Farmacie';
+        return 'Pharmacy';
       case RequestCategory.errands:
-        return 'Treburi';
+        return 'Errands';
       case RequestCategory.checkIn:
-        return 'Verificare';
+        return 'Check-in';
     }
   }
 
   String _getUrgencyLabel(RequestUrgency urgency) {
     switch (urgency) {
       case RequestUrgency.low:
-        return 'Normală';
+        return 'Low';
       case RequestUrgency.medium:
-        return 'Medie';
+        return 'Medium';
       case RequestUrgency.high:
-        return 'Urgentă';
+        return 'High';
     }
   }
 
@@ -61,7 +62,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Filtrează cereri',
+                    'Filter requests',
                     style: Theme.of(context).textTheme.displaySmall,
                   ),
                   TextButton(
@@ -75,7 +76,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                         _selectedUrgency = null;
                       });
                     },
-                    child: const Text('Resetează'),
+                    child: const Text('Reset'),
                   ),
                 ],
               ),
@@ -109,7 +110,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
               ),
               const SizedBox(height: 24),
               Text(
-                'Urgență',
+                'Urgency',
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
@@ -140,7 +141,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Aplică filtre'),
+                  child: const Text('Apply filters'),
                 ),
               ),
             ],
@@ -155,12 +156,12 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_selectedIndex == 0
-            ? 'Hartă cereri'
+            ? 'Request map'
             : _selectedIndex == 1
-                ? 'Listă cereri'
+                ? 'Request list'
                 : _selectedIndex == 2
-                    ? 'Sarcinile mele'
-                    : 'Impactul tău'),
+                    ? 'My tasks'
+                    : 'Your impact'),
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
@@ -181,9 +182,9 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
           setState(() => _selectedIndex = index);
         },
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.map), label: 'Hartă'),
-          NavigationDestination(icon: Icon(Icons.list), label: 'Listă'),
-          NavigationDestination(icon: Icon(Icons.task), label: 'Sarcini'),
+          NavigationDestination(icon: Icon(Icons.map), label: 'Map'),
+          NavigationDestination(icon: Icon(Icons.list), label: 'List'),
+          NavigationDestination(icon: Icon(Icons.task), label: 'Tasks'),
           NavigationDestination(icon: Icon(Icons.favorite), label: 'Impact'),
         ],
       ),
@@ -278,25 +279,29 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              '${displayRequests.length} ${displayRequests.length == 1 ? 'persoană are' : 'persoane au'} nevoie de tine',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Apasă pe un marker pentru a ajuta',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                    color: AppTheme.textSecondary,
-                                  ),
-                            ),
+                              Text(
+                                displayRequests.isEmpty
+                                    ? 'No active requests nearby'
+                                    : '${displayRequests.length} ${displayRequests.length == 1 ? 'person needs' : 'people need'} you',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                displayRequests.isEmpty
+                                    ? 'Check back later for new opportunities'
+                                    : 'Tap a marker to help',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                      color: AppTheme.textSecondary,
+                                    ),
+                              ),
                           ],
                         ),
                       ),
@@ -499,7 +504,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        request.categoryLabel,
+                        request.category.label,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -522,7 +527,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    request.urgencyLabel,
+                    request.urgency.label,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: _getUrgencyColor(request.urgency),
                           fontWeight: FontWeight.w600,
@@ -558,7 +563,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                   Navigator.pop(context);
                   context.push('/volunteer/request/${request.id}');
                 },
-                child: const Text('Vezi detalii'),
+                child: const Text('See details'),
               ),
             ),
           ],
@@ -594,11 +599,11 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                       ? Icons.filter_list_off
                       : Icons.check_circle_outline,
                   title: hasFilters
-                      ? 'Nicio cerere cu aceste filtre'
-                      : 'Nicio cerere disponibilă',
+                      ? 'No requests match these filters'
+                      : 'No requests available',
                   message: hasFilters
-                      ? 'Încearcă să schimbi filtrele'
-                      : 'Verifică din nou mai târziu',
+                      ? 'Try changing the filters'
+                      : 'Check again later',
                   action: hasFilters
                       ? TextButton(
                           onPressed: () {
@@ -607,7 +612,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                               _selectedUrgency = null;
                             });
                           },
-                          child: const Text('Resetează filtrele'),
+                          child: const Text('Reset filters'),
                         )
                       : null,
                 )
@@ -619,7 +624,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                       children: [
                         Expanded(
                           child: Text(
-                            '${requests.length} ${requests.length == 1 ? 'cerere' : 'cereri'} în apropiere',
+                            '${requests.length} ${requests.length == 1 ? 'request' : 'requests'} nearby',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge!
@@ -629,7 +634,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                         if (hasFilters)
                           Chip(
                             label: Text(
-                              '${(_selectedCategory != null ? 1 : 0) + (_selectedUrgency != null ? 1 : 0)} ${(_selectedCategory != null ? 1 : 0) + (_selectedUrgency != null ? 1 : 0) == 1 ? 'filtru' : 'filtre'}',
+                              '${(_selectedCategory != null ? 1 : 0) + (_selectedUrgency != null ? 1 : 0)} ${(_selectedCategory != null ? 1 : 0) + (_selectedUrgency != null ? 1 : 0) == 1 ? 'filter' : 'filters'}',
                               style: const TextStyle(fontSize: 12),
                             ),
                             deleteIcon: const Icon(Icons.close, size: 16),
@@ -683,15 +688,15 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
         return activeRequests.isEmpty
             ? const EmptyState(
                 icon: Icons.volunteer_activism,
-                title: 'Nicio sarcină activă',
-                message: 'Acceptă o cerere pentru a începe să ajuți',
+                title: 'No active task',
+                message: 'Accept a request to start helping',
               )
             : ListView(
                 physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.all(16),
                 children: [
                   Text(
-                    'Sarcini active',
+                    'Active tasks',
                     style: Theme.of(context).textTheme.displaySmall,
                   ),
                   const SizedBox(height: 16),
