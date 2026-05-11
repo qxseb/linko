@@ -26,9 +26,14 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
+if lsof -nP -iTCP:3001 -sTCP:LISTEN >/dev/null 2>&1; then
+  echo "Stopping existing backend on port 3001..."
+  lsof -tiTCP:3001 -sTCP:LISTEN | xargs kill >/dev/null 2>&1 || true
+  sleep 1
+fi
+
 (cd server && npm run start) &
 BACKEND_PID=$!
-
 sleep 3
 
 if [[ -n "$DEVICE_ID" ]]; then

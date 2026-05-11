@@ -21,7 +21,8 @@ class VolunteerDashboard extends StatefulWidget {
   State<VolunteerDashboard> createState() => _VolunteerDashboardState();
 }
 
-class _VolunteerDashboardState extends State<VolunteerDashboard> {
+class _VolunteerDashboardState extends State<VolunteerDashboard>
+    with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
   RequestCategory? _selectedCategory;
   RequestUrgency? _selectedUrgency;
@@ -30,19 +31,60 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
   bool _loadingLocation = true;
   String? _locationError;
   final MapController _mapController = MapController();
+  late final AnimationController _mapAnimationController;
+  final GlobalKey _mapBottomPanelKey = GlobalKey();
+  double _mapBottomPanelHeight = 138;
 
   int? _focusedMarkerIndex;
 
   @override
   void initState() {
     super.initState();
+    _mapAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 520),
+    );
     _fetchLocation();
   }
 
   @override
   void dispose() {
+    _mapAnimationController.dispose();
     _mapController.dispose();
     super.dispose();
+  }
+
+  void _animateMapTo(LatLng target, double zoom) {
+    final startCenter = _mapController.camera.center;
+    final startZoom = _mapController.camera.zoom;
+    final latTween = Tween<double>(
+      begin: startCenter.latitude,
+      end: target.latitude,
+    );
+    final lngTween = Tween<double>(
+      begin: startCenter.longitude,
+      end: target.longitude,
+    );
+    final zoomTween = Tween<double>(begin: startZoom, end: zoom);
+    final animation = CurvedAnimation(
+      parent: _mapAnimationController,
+      curve: Curves.easeInOutCubic,
+    );
+
+    void listener() {
+      _mapController.move(
+        LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
+        zoomTween.evaluate(animation),
+      );
+    }
+
+    _mapAnimationController
+      ..stop()
+      ..reset();
+    _mapAnimationController.addListener(listener);
+    _mapAnimationController.forward().whenComplete(() {
+      _mapAnimationController.removeListener(listener);
+    });
   }
 
   void _cycleTo(
@@ -54,7 +96,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
     final i = index.clamp(0, requests.length - 1);
     final point = _getRequestLatLng(userPoint, i, requests[i]);
     setState(() => _focusedMarkerIndex = i);
-    _mapController.move(point, 16.0);
+    _animateMapTo(point, 16.0);
   }
 
   void _cycleNext(List<Request> requests, LatLng userPoint) {
@@ -75,7 +117,21 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
 
   void _clearFocus(LatLng userPoint) {
     setState(() => _focusedMarkerIndex = null);
-    _mapController.move(userPoint, 14.5);
+    _animateMapTo(userPoint, 14.5);
+  }
+
+  void _measureMapBottomPanel() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final context = _mapBottomPanelKey.currentContext;
+      if (context == null) return;
+      final renderBox = context.findRenderObject() as RenderBox?;
+      final height = renderBox?.size.height;
+      if (height == null || (height - _mapBottomPanelHeight).abs() < 1) {
+        return;
+      }
+      setState(() => _mapBottomPanelHeight = height);
+    });
   }
 
   Future<void> _fetchLocation() async {
@@ -343,6 +399,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
             : null;
         final focusedRequest =
             focusedIndex != null ? displayRequests[focusedIndex] : null;
+        _measureMapBottomPanel();
 
         return Stack(
           children: [
@@ -413,7 +470,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
 
             Positioned(
               right: 16,
-              bottom: 148,
+              bottom: 16 + _mapBottomPanelHeight + 12,
               child: FloatingActionButton.small(
                 heroTag: 'recenter',
                 backgroundColor: Colors.white,
@@ -429,6 +486,7 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
               right: 16,
               bottom: 16,
               child: Card(
+                key: _mapBottomPanelKey,
                 elevation: 8,
                 clipBehavior: Clip.hardEdge,
                 child: AnimatedSwitcher(
