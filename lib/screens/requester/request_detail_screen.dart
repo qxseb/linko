@@ -151,7 +151,7 @@ class RequestDetailScreen extends StatelessWidget {
                       _DetailRow(
                         icon: Icons.location_on,
                         label: 'Location',
-                        value: request.location,
+                        value: requestLocationText(request),
                       ),
                       const SizedBox(height: 16),
                       _DetailRow(

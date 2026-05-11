@@ -9,12 +9,16 @@ class RequestCard extends StatelessWidget {
   final Request request;
   final VoidCallback onTap;
   final User? requesterInfo;
+  final double? userLatitude;
+  final double? userLongitude;
 
   const RequestCard({
     super.key,
     required this.request,
     required this.onTap,
     this.requesterInfo,
+    this.userLatitude,
+    this.userLongitude,
   });
 
   IconData _getCategoryIcon() {
@@ -189,7 +193,11 @@ class RequestCard extends StatelessWidget {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      request.location,
+                      requestLocationText(
+                        request,
+                        userLatitude: userLatitude,
+                        userLongitude: userLongitude,
+                      ),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),

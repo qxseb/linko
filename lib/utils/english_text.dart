@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../models/message_model.dart';
 import '../models/request_model.dart';
@@ -139,3 +140,41 @@ String messageContentText(Message message) {
 }
 
 String requestDescriptionText(Request request) => request.description;
+
+String requestLocationText(
+  Request request, {
+  double? userLatitude,
+  double? userLongitude,
+}) {
+  final location = stripDistanceFromLocation(request.location);
+
+  if (userLatitude == null ||
+      userLongitude == null ||
+      request.latitude == null ||
+      request.longitude == null) {
+    return location;
+  }
+
+  final meters = Geolocator.distanceBetween(
+    userLatitude,
+    userLongitude,
+    request.latitude!,
+    request.longitude!,
+  );
+
+  return '$location (${formatDistance(meters)})';
+}
+
+String stripDistanceFromLocation(String location) {
+  return location.replaceFirst(
+    RegExp(r'\s*\((?:\d+(?:[.,]\d+)?\s*km|\d+\s*m)\)\s*$'),
+    '',
+  );
+}
+
+String formatDistance(double meters) {
+  if (meters < 1000) {
+    return '${meters.round()} m';
+  }
+  return '${(meters / 1000).toStringAsFixed(1)} km';
+}

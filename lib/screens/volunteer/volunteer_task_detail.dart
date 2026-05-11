@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../models/request_model.dart';
 import '../../providers/app_state.dart';
+import '../../services/location_service.dart';
 import '../../utils/english_text.dart';
 import '../../utils/theme.dart';
 import '../../utils/formatters.dart';
@@ -112,10 +113,17 @@ class VolunteerTaskDetail extends StatelessWidget {
                         value: request.description,
                       ),
                       const SizedBox(height: 16),
-                      _DetailRow(
-                        icon: Icons.location_on,
-                        label: 'Location',
-                        value: request.location,
+                      FutureBuilder(
+                        future: LocationService.getCurrentPosition(),
+                        builder: (context, snapshot) => _DetailRow(
+                          icon: Icons.location_on,
+                          label: 'Location',
+                          value: requestLocationText(
+                            request,
+                            userLatitude: snapshot.data?.latitude,
+                            userLongitude: snapshot.data?.longitude,
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 16),
                       _DetailRow(

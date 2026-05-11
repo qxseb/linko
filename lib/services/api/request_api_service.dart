@@ -138,7 +138,6 @@ Request requestFromBackend(Map<String, dynamic> json) {
   final volunteer = _objectOrNull(json['assignedVolunteer']);
   final status = _statusFromBackend(json['status']?.toString());
   final locationText = json['locationText']?.toString() ?? '';
-  final distanceText = json['distanceText']?.toString();
   final createdAt = _dateFromJson(json['createdAt']) ?? DateTime.now();
   final updatedAt = _dateFromJson(json['updatedAt']);
 
@@ -150,7 +149,7 @@ Request requestFromBackend(Map<String, dynamic> json) {
     category: _categoryFromBackend(json['category']?.toString()),
     description: json['description']?.toString() ?? '',
     urgency: _urgencyFromBackend(json['urgency']?.toString()),
-    location: _locationWithDistance(locationText, distanceText),
+    location: locationText,
     latitude: (json['latitude'] as num?)?.toDouble(),
     longitude: (json['longitude'] as num?)?.toDouble(),
     preferredTime: _dateFromJson(json['preferredTime']) ?? createdAt,
@@ -252,13 +251,6 @@ String _statusToBackend(RequestStatus status) {
 DateTime? _dateFromJson(dynamic value) {
   if (value == null) return null;
   return DateTime.tryParse(value.toString());
-}
-
-String _locationWithDistance(String location, String? distance) {
-  if (distance == null || distance.isEmpty || location.contains(distance)) {
-    return location;
-  }
-  return '$location ($distance)';
 }
 
 String _titleFor(RequestCategory category, String description) {

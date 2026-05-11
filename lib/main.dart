@@ -79,12 +79,13 @@ class LinkOApp extends StatelessWidget {
             builder: (context, child) {
               return Column(
                 children: [
-                  SafeArea(
-                    bottom: false,
-                    child: _ModeStatusStrip(appState: appState),
-                  ),
+                  _ModeStatusStrip(appState: appState),
                   Expanded(
-                    child: child ?? const SizedBox.shrink(),
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: child ?? const SizedBox.shrink(),
+                    ),
                   ),
                 ],
               );
@@ -109,11 +110,17 @@ class _ModeStatusStrip extends StatelessWidget {
     final textColor =
         isDemo ? const Color(0xFF92400E) : const Color(0xFF065F46);
     final label = isDemo ? 'Demo Mode / Offline' : 'Live Backend';
+    final topInset = MediaQuery.paddingOf(context).top;
 
     return Container(
       width: double.infinity,
-      color: background,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.fromLTRB(12, topInset + 5, 12, 6),
+      decoration: BoxDecoration(
+        color: background,
+        border: Border(
+          bottom: BorderSide(color: textColor.withValues(alpha: 0.18)),
+        ),
+      ),
       child: Text(
         label,
         textAlign: TextAlign.center,

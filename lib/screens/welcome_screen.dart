@@ -9,11 +9,17 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                 Row(
                   children: [
                     Container(
@@ -161,7 +167,7 @@ class WelcomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Catena Pharmacy, Dorobanti St. (0.8 km)',
+                            'Catena Pharmacy, Dorobanti St.',
                             style:
                                 Theme.of(context).textTheme.bodySmall!.copyWith(
                                       color: AppTheme.textSecondary,
@@ -335,9 +341,14 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-            ],
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
           ),
-        ),
       ),
     );
   }

@@ -877,7 +877,11 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    request.location,
+                    requestLocationText(
+                      request,
+                      userLatitude: _userPosition?.latitude,
+                      userLongitude: _userPosition?.longitude,
+                    ),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
@@ -989,6 +993,8 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                           request: request,
                           requesterInfo:
                               appState.getUserById(request.requesterId),
+                          userLatitude: _userPosition?.latitude,
+                          userLongitude: _userPosition?.longitude,
                           onTap: () =>
                               context.push('/volunteer/request/${request.id}'),
                         );
@@ -1037,6 +1043,8 @@ class _VolunteerDashboardState extends State<VolunteerDashboard> {
                         request: request,
                         requesterInfo:
                             appState.getUserById(request.requesterId),
+                        userLatitude: _userPosition?.latitude,
+                        userLongitude: _userPosition?.longitude,
                         onTap: () =>
                             context.push('/volunteer/task/${request.id}'),
                       );
@@ -1057,12 +1065,16 @@ class _AnimatedRequestCard extends StatelessWidget {
   final int index;
   final Request request;
   final dynamic requesterInfo;
+  final double? userLatitude;
+  final double? userLongitude;
   final VoidCallback onTap;
 
   const _AnimatedRequestCard({
     required this.index,
     required this.request,
     required this.requesterInfo,
+    this.userLatitude,
+    this.userLongitude,
     required this.onTap,
   });
 
@@ -1084,6 +1096,8 @@ class _AnimatedRequestCard extends StatelessWidget {
       child: RequestCard(
         request: request,
         requesterInfo: requesterInfo,
+        userLatitude: userLatitude,
+        userLongitude: userLongitude,
         onTap: onTap,
       ),
     );

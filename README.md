@@ -30,26 +30,43 @@ Linko este o platformă mobilă care rezolvă o problemă reală: **peste 3.5 mi
 
 ---
 
+## 🏁 Update pentru finală
+
+Versiunea prezentată în finală nu mai este doar un demo local cu date mock. LinkO a fost extinsă cu funcționalitățile esențiale planificate pentru o versiune de producție și rulează cu un backend real.
+
+### Implementat pentru finală
+
+- Backend real cu **Node.js + Express + MongoDB**
+- Autentificare și conturi reale pentru requesteri și voluntari
+- Sincronizare între aplicația mobilă și server
+- WebSocket pentru actualizări în timp real și chat
+- GPS și calcul real al distanței dintre voluntar și cerere
+- Hartă interactivă pentru cererile disponibile
+- Mod sigur de prezentare: **Live Backend** + **Demo Mode / Offline Mode**
+
+### Rămas pentru o etapă viitoare
+
+Singura funcționalitate planificată care nu a fost inclusă în versiunea de finală este verificarea identității prin document/CNP. Aceasta presupune procesarea unor date sensibile și necesită validări suplimentare de securitate, legalitate și protecție a datelor.
+
+---
+
 ## 🚀 Quick Start
 
 ### Cerințe
 
 - Flutter 3.0 sau mai nou
 - Dart 3.0 sau mai nou
+- Node.js
+- MongoDB connection string
 
-### URL / Port defaults
+### Rulare locală pe telefon cu backend local
 
-- Flutter default API URL:
-  - Android emulator: `http://10.0.2.2:3001`
-  - Alte platforme: `http://localhost:3001`
-- Node.js backend default port: `3001` (`PORT` din `.env` poate suprascrie)
+Pentru demo pe iPhone conectat la același Wi-Fi ca laptopul:
 
-### Startup behavior
-
-- Dacă backend-ul răspunde la `/api/health`, aplicația rulează în **Live Backend** mode.
-- Dacă backend-ul nu este disponibil, aplicația afișează opțiuni:
-  - `Retry Live Backend`
-  - `Enter Demo Mode (Offline)`
+```bash
+cd /Users/vxmpseb/Desktop/linko
+./scripts/run_local_backend_phone.sh 00008110-001C25E9147B801E
+```
 
 ### Demo Accounts (Pre-configured)
 
@@ -67,43 +84,29 @@ Pentru testare rapidă, am pus la dispoziție aceste conturi:
 
 ---
 
-## 📊 Date Mock (Demo Mode)
+## 📊 Demo Mode / Offline Mode
 
-Aplicația include date mock pentru demonstrație completă:
+Aplicația include și un mod de siguranță pentru demonstrații live. Dacă backend-ul nu este disponibil, aplicația poate porni în **Demo Mode**, cu date locale realiste.
 
-### Utilizatori Mock
+### Date locale incluse
 
 - 2 requesters (persoane care cer ajutor)
 - 3 volunteers (persoane care oferă ajutor)
-- Toți cu trust levels și statistici realiste
-
-### Cereri Mock
-
-- 3 cereri deschise (Open)
-- 2 cereri acceptate (Accepted)
-- 2 cereri în desfășurare (InProgress)
-- 1 cerere finalizată (Completed)
+- Cereri cu statusuri diferite: Open, Accepted, In Progress, Completed
+- Mesaje demo pentru chat
+- Statistici realiste pentru profil și impact
+- Coordonate reale pentru hartă și calculul distanței
 
 ---
 
-## 🚧 Limitări Demo (Mock Data)
+## 🔎 Clarificare pentru evaluare
 
-⚠️ **Versiunea curentă folosește date mock pentru demonstrație:**
+Pentru finală, aplicația poate fi prezentată în două moduri:
 
-- Datele sunt locale (SharedPreferences)
-- Nu există sincronizare între device-uri
-- Notificările sunt simulate (nu push notifications)
-- Distanța este mock (0.8km, 1.2km hardcoded)
-- Verificarea utilizatorilor este mock
+- **Live Backend**: folosește backend-ul real Node.js + MongoDB, autentificare reală, API și WebSocket.
+- **Demo Mode / Offline Mode**: fallback local pentru situații în care internetul, rețeaua sau serverul nu sunt disponibile în timpul prezentării.
 
-🚀 **Versiunea de producție va include:**
-
-- Backend real (Firebase/Node.js + MongoDB)
-- Notificări push reale (Firebase Cloud Messaging)
-- GPS pentru distanță reală
-- Verificare identitate (upload ID + validare CNP)
-- Sync real-time între device-uri
-- WebSocket pentru chat instant
+Demo Mode nu înlocuiește backend-ul real; este doar o măsură de siguranță pentru stabilitatea prezentării.
 
 ---
 
