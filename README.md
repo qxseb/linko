@@ -37,8 +37,19 @@ Linko este o platformă mobilă care rezolvă o problemă reală: **peste 3.5 mi
 - Flutter 3.0 sau mai nou
 - Dart 3.0 sau mai nou
 
-**Aplicația va porni INSTANT cu date mock pentru demonstrație.**  
-**NU necesită Firebase, backend sau internet.**
+### URL / Port defaults
+
+- Flutter default API URL:
+  - Android emulator: `http://10.0.2.2:3001`
+  - Alte platforme: `http://localhost:3001`
+- Node.js backend default port: `3001` (`PORT` din `.env` poate suprascrie)
+
+### Startup behavior
+
+- Dacă backend-ul răspunde la `/api/health`, aplicația rulează în **Live Backend** mode.
+- Dacă backend-ul nu este disponibil, aplicația afișează opțiuni:
+  - `Retry Live Backend`
+  - `Enter Demo Mode (Offline)`
 
 ### Demo Accounts (Pre-configured)
 
@@ -46,13 +57,13 @@ Pentru testare rapidă, am pus la dispoziție aceste conturi:
 
 **Requester (persoană care cere ajutor):**
 
-- Email: `maria.popescu@email.com`
-- Password: any
+- Email: `maria.ionescu@demo.linko`
+- Password: `parola123`
 
 **Volunteer (persoană care oferă ajutor):**
 
-- Email: `andrei.ionescu@email.com`
-- Password: any
+- Email: `ioana.stan@demo.linko`
+- Password: `parola123`
 
 ---
 

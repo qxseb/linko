@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 import '../providers/app_state.dart';
+import '../services/api/api_client.dart';
 import '../utils/english_text.dart';
 import '../utils/theme.dart';
 import '../widgets/loading_overlay.dart';
@@ -33,6 +34,7 @@ class _AuthScreenState extends State<AuthScreen>
   late bool _isLogin;
   String? _selectedRole;
   String? _errorMessage;
+  bool _showDemoModeShortcut = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
@@ -116,7 +118,10 @@ class _AuthScreenState extends State<AuthScreen>
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
 
-    setState(() => _errorMessage = null);
+    setState(() {
+      _errorMessage = null;
+      _showDemoModeShortcut = false;
+    });
 
     if (_selectedRole == null) {
       setState(() => _errorMessage = 'Choose your role');
@@ -150,8 +155,12 @@ class _AuthScreenState extends State<AuthScreen>
       }
     } catch (e) {
       if (mounted) {
+        final isNetworkFailure = e is ApiException && e.isNetworkError;
         setState(
-          () => _errorMessage = friendlyErrorMessage(e.toString()),
+          () {
+            _errorMessage = friendlyErrorMessage(e.toString());
+            _showDemoModeShortcut = isNetworkFailure;
+          },
         );
       }
     }
@@ -205,6 +214,23 @@ class _AuthScreenState extends State<AuthScreen>
                                     color: AppTheme.textSecondary,
                                   ),
                         ),
+                        if (appState.isDemoMode) ...[
+                          const SizedBox(height: 14),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Colors.amber.withValues(alpha: 0.4),
+                              ),
+                            ),
+                            child: const Text(
+                              'Demo Mode is active.\nRequester: maria.ionescu@demo.linko\nVolunteer: ioana.stan@demo.linko\nPassword: parola123',
+                              style: TextStyle(fontSize: 12.5),
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 32),
                         Text(
                           'Choose your role',
@@ -400,6 +426,21 @@ class _AuthScreenState extends State<AuthScreen>
                             ),
                           ),
                           const SizedBox(height: 16),
+                          if (_showDemoModeShortcut && !appState.isDemoMode)
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton.icon(
+                                onPressed: () async {
+                                  await appState.enterDemoMode();
+                                  if (!context.mounted) return;
+                                  context.go('/');
+                                },
+                                icon: const Icon(Icons.offline_bolt),
+                                label: const Text('Switch To Demo Mode'),
+                              ),
+                            ),
+                          if (_showDemoModeShortcut && !appState.isDemoMode)
+                            const SizedBox(height: 16),
                         ],
                         ElevatedButton(
                           onPressed: appState.isLoading ? null : _submit,

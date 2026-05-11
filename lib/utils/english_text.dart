@@ -111,6 +111,13 @@ String friendlyErrorMessage(String error) {
   if (normalized.contains('already accepted')) {
     return 'This request has already been accepted';
   }
+  if (normalized.contains('server is currently unavailable') ||
+      normalized.contains('server is not responding') ||
+      normalized.contains('could not connect to the server') ||
+      normalized.contains('failed host lookup') ||
+      normalized.contains('socketexception')) {
+    return 'Live backend is offline. Start the server, retry, or switch to Demo Mode.';
+  }
   return 'Something went wrong. Please try again.';
 }
 

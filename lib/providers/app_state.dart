@@ -16,44 +16,117 @@ import '../services/api/auth_api_service.dart';
 import '../services/api/request_api_service.dart';
 import '../services/api/message_api_service.dart';
 import '../services/api/socket_sync_service.dart';
+import '../services/demo/demo_data.dart';
 
 class AppState extends ChangeNotifier {
-  late final StorageService _storageService;
-  late final ApiClient _apiClient;
-  late final AuthService _authService;
-  late final RequestService _requestService;
-  late final MessageService _messageService;
+  late StorageService _storageService;
+  late ApiClient _apiClient;
+  late AuthService _authService;
+  late RequestService _requestService;
+  late MessageService _messageService;
   SocketSyncService? _socketSyncService;
   final NotificationService _notificationService = NotificationService();
 
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
+  String? _initializationError;
+  String? get initializationError => _initializationError;
+  bool _isDemoMode = false;
+  bool get isDemoMode => _isDemoMode;
+  bool get isLiveBackend => !_isDemoMode && _initializationError == null;
 
   AppState() {
-    _initializeServices();
+    _initializeServices(useDemoMode: false);
   }
 
-  Future<void> _initializeServices() async {
-    _storageService = StorageService();
-    await _storageService.init();
-    _apiClient = ApiClient();
-    _authService = AuthService(_storageService, AuthApiService(_apiClient));
-    _requestService =
-        RequestService(_storageService, RequestApiService(_apiClient));
-    _messageService =
-        MessageService(_storageService, MessageApiService(_apiClient));
-    await _authService.init();
-    await _requestService.init();
-    await _messageService.init();
-    _socketSyncService = SocketSyncService(_apiClient)
-      ..connect(
-        onEvent: (eventName, payload) {
-          unawaited(_handleSocketEvent(eventName, payload));
-        },
-      );
+  Future<void> _initializeServices({required bool useDemoMode}) async {
+    try {
+      _isDemoMode = useDemoMode;
+      _initializationError = null;
+      _storageService = StorageService();
+      await _storageService.init();
 
-    _isInitialized = true;
+      if (useDemoMode) {
+        await _storageService.clearAll();
+      }
+
+      _apiClient = ApiClient();
+
+      if (!useDemoMode) {
+        await _apiClient.get('/api/health');
+      }
+
+      final demoUsers = useDemoMode ? DemoData.users() : <User>[];
+      final demoUsersById = {for (final user in demoUsers) user.id: user};
+
+      _authService = AuthService(
+        _storageService,
+        AuthApiService(_apiClient),
+        demoMode: useDemoMode,
+        demoUsers: demoUsers,
+      );
+      _requestService =
+          RequestService(
+        _storageService,
+        RequestApiService(_apiClient),
+        demoMode: useDemoMode,
+        demoUsersById: demoUsersById,
+        demoInitialRequests: useDemoMode ? DemoData.requests() : const [],
+      );
+      _messageService =
+          MessageService(
+        _storageService,
+        MessageApiService(_apiClient),
+        demoMode: useDemoMode,
+        demoInitialMessages:
+            useDemoMode ? DemoData.messagesByRequest() : const {},
+      );
+      await _authService.init();
+      await _requestService.init();
+      await _messageService.init();
+
+      _socketSyncService?.disconnect();
+      _socketSyncService = null;
+
+      if (!useDemoMode) {
+        _socketSyncService = SocketSyncService(_apiClient)
+          ..connect(
+            onEvent: (eventName, payload) {
+              unawaited(_handleSocketEvent(eventName, payload));
+            },
+          );
+      }
+
+      _isDemoMode = useDemoMode;
+    } on ApiException catch (e) {
+      if (e.isNetworkError) {
+        _initializationError =
+            'Live backend is unreachable. You can retry or continue in Demo Mode.';
+      } else {
+        _initializationError = e.message;
+      }
+    } catch (_) {
+      _initializationError = useDemoMode
+          ? 'Could not start Demo Mode. Please retry.'
+          : 'Live backend is unreachable. You can retry or continue in Demo Mode.';
+    } finally {
+      _isInitialized = true;
+      notifyListeners();
+    }
+  }
+
+  Future<void> retryInitialization() async {
+    _isInitialized = false;
+    _initializationError = null;
     notifyListeners();
+    await _initializeServices(useDemoMode: false);
+  }
+
+  Future<void> enterDemoMode() async {
+    _isInitialized = false;
+    _initializationError = null;
+    notifyListeners();
+    await _initializeServices(useDemoMode: true);
   }
 
   Future<void> _handleSocketEvent(String eventName, dynamic payload) async {

@@ -31,13 +31,97 @@ class LinkOApp extends StatelessWidget {
             );
           }
 
+          if (appState.initializationError != null) {
+            return MaterialApp(
+              title: 'LinkO',
+              theme: AppTheme.lightTheme,
+              debugShowCheckedModeBanner: false,
+              home: Scaffold(
+                body: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          appState.initializationError!,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () => appState.retryInitialization(),
+                            child: const Text('Retry Live Backend'),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: () => appState.enterDemoMode(),
+                            child: const Text('Enter Demo Mode (Offline)'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+
           return MaterialApp.router(
             title: 'LinkO',
             theme: AppTheme.lightTheme,
             routerConfig: router,
             debugShowCheckedModeBanner: false,
+            builder: (context, child) {
+              return Column(
+                children: [
+                  SafeArea(
+                    bottom: false,
+                    child: _ModeStatusStrip(appState: appState),
+                  ),
+                  Expanded(
+                    child: child ?? const SizedBox.shrink(),
+                  ),
+                ],
+              );
+            },
           );
         },
+      ),
+    );
+  }
+}
+
+class _ModeStatusStrip extends StatelessWidget {
+  final AppState appState;
+
+  const _ModeStatusStrip({required this.appState});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDemo = appState.isDemoMode;
+    final background =
+        isDemo ? const Color(0xFFFDE68A) : const Color(0xFFBBF7D0);
+    final textColor =
+        isDemo ? const Color(0xFF92400E) : const Color(0xFF065F46);
+    final label = isDemo ? 'Demo Mode / Offline' : 'Live Backend';
+
+    return Container(
+      width: double.infinity,
+      color: background,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: textColor,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }

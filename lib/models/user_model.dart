@@ -8,6 +8,8 @@ class User {
   final String? phone;
   final String? address;
   final bool isVerified;
+  final int completedTasks;
+  final int completedRequests;
 
   final DateTime createdAt;
   final DateTime? lastActive;
