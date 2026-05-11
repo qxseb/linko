@@ -108,7 +108,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                       const Divider(height: 32),
                       _DetailRow(
                         icon: Icons.description,
-                        label: 'Descriere',
+                        label: 'Description',
                         value: request.description,
                       ),
                       const SizedBox(height: 16),
@@ -120,7 +120,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                       const SizedBox(height: 16),
                       _DetailRow(
                         icon: Icons.access_time,
-                        label: 'Timp preferat',
+                        label: 'Preferred time',
                         value: Formatters.formatPreferredTime(
                           request.preferredTime,
                         ),
@@ -137,7 +137,7 @@ class VolunteerTaskDetail extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Solicitant',
+                        'Requester',
                         style: Theme.of(context).textTheme.displaySmall,
                       ),
                       const SizedBox(height: 16),

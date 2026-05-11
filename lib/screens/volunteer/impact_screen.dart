@@ -119,7 +119,7 @@ class ImpactScreen extends StatelessWidget {
                       child: _StatCard(
                         icon: Icons.calendar_today,
                         value: thisMonth.toString(),
-                        label: 'Luna\nasta',
+                        label: 'This\nmonth',
                         color: AppTheme.warningColor,
                       ),
                     ),
@@ -127,7 +127,7 @@ class ImpactScreen extends StatelessWidget {
                     Expanded(
                       child: _StatCard(
                         icon: Icons.star,
-                        value: user?.trustLevel ?? 'Nou',
+                        value: user?.trustLevel ?? 'New',
                         label: 'Trust\nlevel',
                         color: Colors.amber,
                         isText: true,
@@ -273,8 +273,8 @@ class _ImpactItem extends StatelessWidget {
     final now = DateTime.now();
     final diff = now.difference(date);
 
-    if (diff.inDays == 0) return 'Azi';
-    if (diff.inDays == 1) return 'Ieri';
+    if (diff.inDays == 0) return 'Today';
+    if (diff.inDays == 1) return 'Yesterday';
     if (diff.inDays < 7) return '${diff.inDays} days ago';
     if (diff.inDays < 30) {
       final weeks = (diff.inDays / 7).floor();

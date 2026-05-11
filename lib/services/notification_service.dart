@@ -1,44 +1,38 @@
+import 'package:uuid/uuid.dart';
 import '../models/notification_model.dart';
-import 'mock_data_service.dart';
 
 class NotificationService {
+  static const _uuid = Uuid();
   final Map<String, List<AppNotification>> _notificationsByUser = {};
 
   List<AppNotification> getNotificationsForUser(String userId) {
-    if (!_notificationsByUser.containsKey(userId)) {
-      _notificationsByUser[userId] = MockDataService.getMockNotifications(
-        userId,
-      );
-    }
-    return List.unmodifiable(_notificationsByUser[userId]!);
+    return List.unmodifiable(
+      _notificationsByUser[userId] ?? [],
+    );
   }
 
   int getUnreadCount(String userId) {
-    final notifications = getNotificationsForUser(userId);
-    return notifications.where((n) => !n.isRead).length;
+    return getNotificationsForUser(userId)
+        .where((n) => !n.isRead)
+        .length;
   }
 
   Future<void> markAsRead(String notificationId, String userId) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-
-    if (_notificationsByUser.containsKey(userId)) {
-      final index = _notificationsByUser[userId]!.indexWhere(
-        (n) => n.id == notificationId,
-      );
-      if (index != -1) {
-        final notification = _notificationsByUser[userId]![index];
-        _notificationsByUser[userId]![index] = AppNotification(
-          id: notification.id,
-          userId: notification.userId,
-          type: notification.type,
-          title: notification.title,
-          message: notification.message,
-          requestId: notification.requestId,
-          timestamp: notification.timestamp,
-          isRead: true,
-        );
-      }
-    }
+    final notifications = _notificationsByUser[userId];
+    if (notifications == null) return;
+    final index = notifications.indexWhere((n) => n.id == notificationId);
+    if (index == -1) return;
+    final n = notifications[index];
+    notifications[index] = AppNotification(
+      id: n.id,
+      userId: n.userId,
+      type: n.type,
+      title: n.title,
+      message: n.message,
+      requestId: n.requestId,
+      timestamp: n.timestamp,
+      isRead: true,
+    );
   }
 
   Future<void> createNotification({
@@ -49,7 +43,7 @@ class NotificationService {
     String? requestId,
   }) async {
     final notification = AppNotification(
-      id: MockDataService.generateId(),
+      id: _uuid.v4(),
       userId: userId,
       type: type,
       title: title,
@@ -57,10 +51,7 @@ class NotificationService {
       requestId: requestId,
       timestamp: DateTime.now(),
     );
-
-    if (!_notificationsByUser.containsKey(userId)) {
-      _notificationsByUser[userId] = [];
-    }
+    _notificationsByUser.putIfAbsent(userId, () => []);
     _notificationsByUser[userId]!.insert(0, notification);
   }
 }

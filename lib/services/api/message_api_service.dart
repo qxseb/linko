@@ -54,7 +54,7 @@ Message messageFromBackend(
     senderName: isSystem
         ? 'System'
         : senderJson == null
-            ? 'Utilizator'
+            ? 'User'
             : userFromBackend(senderJson).name,
     content: json['text']?.toString() ?? '',
     timestamp: DateTime.tryParse(json['createdAt']?.toString() ?? '') ??

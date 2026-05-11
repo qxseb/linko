@@ -1,19 +1,19 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const helpRequestSchema = new mongoose.Schema(
   {
     requester: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     assignedVolunteer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
     },
     category: {
       type: String,
-      enum: ['groceries', 'pharmacy', 'errands', 'checkin'],
+      enum: ["groceries", "pharmacy", "errands", "checkin"],
       required: true,
     },
     title: {
@@ -43,15 +43,18 @@ const helpRequestSchema = new mongoose.Schema(
     },
     urgency: {
       type: String,
-      enum: ['low', 'medium', 'high'],
-      default: 'medium',
+      enum: ["low", "medium", "high"],
+      default: "medium",
     },
     status: {
       type: String,
-      enum: ['open', 'accepted', 'in_progress', 'completed', 'cancelled'],
-      default: 'open',
+      enum: ["open", "accepted", "in_progress", "completed", "cancelled"],
+      default: "open",
     },
     preferredTime: {
+      type: Date,
+    },
+    completedAt: {
       type: Date,
     },
     isProxyRequest: {
@@ -80,7 +83,7 @@ const helpRequestSchema = new mongoose.Schema(
         delete ret.__v;
       },
     },
-  }
+  },
 );
 
-module.exports = mongoose.model('HelpRequest', helpRequestSchema);
+module.exports = mongoose.model("HelpRequest", helpRequestSchema);

@@ -1,7 +1,6 @@
 import '../models/user_model.dart';
 import 'api/api_client.dart';
 import 'api/auth_api_service.dart';
-import 'mock_data_service.dart';
 import 'storage_service.dart';
 
 class AuthService {
@@ -40,25 +39,17 @@ class AuthService {
   }
 
   Future<User> login(String email, String password, UserRole role) async {
-    try {
-      final result = await _authApi.login(
-        email: email.trim().toLowerCase(),
-        password: password,
-      );
+    final result = await _authApi.login(
+      email: email.trim().toLowerCase(),
+      password: password,
+    );
 
-      if (result.user.role != role) {
-        throw const ApiException('Rolul selectat nu corespunde contului');
-      }
-
-      await _authApi.saveToken(result.token);
-      _currentUser = result.user;
-    } on ApiException catch (e) {
-      if (!e.isNetworkError) {
-        throw Exception(e.message);
-      }
-      _currentUser = await _offlineDemoLogin(email, role);
+    if (result.user.role != role) {
+      throw const ApiException('The selected role does not match this account');
     }
 
+    await _authApi.saveToken(result.token);
+    _currentUser = result.user;
     await _storage.saveCurrentUser(_currentUser!);
     return _currentUser!;
   }
@@ -69,31 +60,15 @@ class AuthService {
     String password,
     UserRole role,
   ) async {
-    try {
-      final result = await _authApi.register(
-        name: name,
-        email: email.trim().toLowerCase(),
-        password: password,
-        role: role,
-      );
+    final result = await _authApi.register(
+      name: name,
+      email: email.trim().toLowerCase(),
+      password: password,
+      role: role,
+    );
 
-      await _authApi.saveToken(result.token);
-      _currentUser = result.user;
-    } on ApiException catch (e) {
-      if (!e.isNetworkError) {
-        throw Exception(e.message);
-      }
-
-      _currentUser = User(
-        id: MockDataService.generateId(),
-        name: name,
-        email: email.trim().toLowerCase(),
-        role: role,
-        isVerified: true,
-        createdAt: DateTime.now(),
-      );
-    }
-
+    await _authApi.saveToken(result.token);
+    _currentUser = result.user;
     await _storage.saveCurrentUser(_currentUser!);
     return _currentUser!;
   }
@@ -110,22 +85,4 @@ class AuthService {
     await _storage.saveCurrentUser(user);
   }
 
-  Future<User> _offlineDemoLogin(String email, UserRole role) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-
-    final normalizedEmail = email.trim().toLowerCase();
-    final isDemoEmail = normalizedEmail == 'maria.popescu@email.com' ||
-        normalizedEmail == 'andrei.ionescu@email.com' ||
-        normalizedEmail.endsWith('@demo.linko');
-
-    if (!isDemoEmail) {
-      throw Exception(
-        'Serverul nu este disponibil. Pentru modul demo foloseste un cont demo.',
-      );
-    }
-
-    return role == UserRole.requester
-        ? MockDataService.createMockRequester()
-        : MockDataService.createMockVolunteer();
-  }
 }

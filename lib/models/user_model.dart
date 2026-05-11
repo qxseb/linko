@@ -8,7 +8,7 @@ class User {
   final String? phone;
   final String? address;
   final bool isVerified;
-  final int completedTasks;
+
   final DateTime createdAt;
   final DateTime? lastActive;
   final int? avgResponseMinutes;
@@ -22,18 +22,21 @@ class User {
     this.address,
     this.isVerified = false,
     this.completedTasks = 0,
+    this.completedRequests = 0,
     required this.createdAt,
     this.lastActive,
     this.avgResponseMinutes,
   });
 
   String get trustLevel {
-    if (completedTasks == 0) return 'New';
-    if (completedTasks < 5) return 'Active';
+    final count =
+        role == UserRole.volunteer ? completedTasks : completedRequests;
+    if (count == 0) return 'New';
+    if (count < 5) return 'Active';
     return 'Trusted';
   }
 
-  String get lastActiveLabel {
+  String get lastActiveText {
     if (lastActive == null) return 'Joined recently';
     final diff = DateTime.now().difference(lastActive!);
     if (diff.inMinutes < 60) return 'Active now';
@@ -43,12 +46,15 @@ class User {
     return 'Active ${diff.inDays} days ago';
   }
 
-  String get responseTimeLabel {
+  String get responseTimeText {
     if (avgResponseMinutes == null) return 'New volunteer';
     if (avgResponseMinutes! < 15) return 'Responds quickly';
     if (avgResponseMinutes! < 60) return 'Responds within 1h';
     return 'Responds the same day';
   }
+
+  String get trustLevelLabel => trustLevel;
+  String get lastActiveLabel => lastActiveText;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -59,6 +65,7 @@ class User {
         'address': address,
         'isVerified': isVerified,
         'completedTasks': completedTasks,
+        'completedRequests': completedRequests,
         'createdAt': createdAt.toIso8601String(),
         'lastActive': lastActive?.toIso8601String(),
         'avgResponseMinutes': avgResponseMinutes,
@@ -72,11 +79,14 @@ class User {
         phone: json['phone'],
         address: json['address'],
         isVerified: json['isVerified'] ?? false,
-        completedTasks: json['completedTasks'] ?? 0,
+        completedTasks: (json['completedTasks'] as num?)?.toInt() ?? 0,
+        completedRequests: (json['completedRequests'] as num?)?.toInt() ?? 0,
         createdAt: DateTime.parse(json['createdAt']),
         lastActive: json['lastActive'] != null
             ? DateTime.parse(json['lastActive'])
             : null,
-        avgResponseMinutes: json['avgResponseMinutes'],
+        avgResponseMinutes: json['avgResponseMinutes'] is num
+            ? (json['avgResponseMinutes'] as num).toInt()
+            : null,
       );
 }

@@ -176,9 +176,11 @@ class _AuthScreenState extends State<AuthScreen>
             body: SafeArea(
               child: FadeTransition(
                 opacity: _fadeAnimation,
-                child: SingleChildScrollView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: ScrollConfiguration(
+                  behavior: const ScrollBehavior().copyWith(scrollbars: false),
+                  child: SingleChildScrollView(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -446,6 +448,7 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
           ),
+        ),
         );
       },
     );

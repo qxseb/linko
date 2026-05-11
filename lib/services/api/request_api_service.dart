@@ -53,6 +53,8 @@ class RequestApiService {
     String? proxyForName,
     String? proxyRelationship,
     String? proxyNotes,
+    double? latitude,
+    double? longitude,
   }) async {
     final data = await _client.post(
       '/api/requests',
@@ -68,6 +70,8 @@ class RequestApiService {
         'proxyName': proxyForName,
         'proxyRelationship': proxyRelationship,
         'proxyNotes': proxyNotes,
+        'latitude': latitude,
+        'longitude': longitude,
       },
     );
 
@@ -147,6 +151,8 @@ Request requestFromBackend(Map<String, dynamic> json) {
     description: json['description']?.toString() ?? '',
     urgency: _urgencyFromBackend(json['urgency']?.toString()),
     location: _locationWithDistance(locationText, distanceText),
+    latitude: (json['latitude'] as num?)?.toDouble(),
+    longitude: (json['longitude'] as num?)?.toDouble(),
     preferredTime: _dateFromJson(json['preferredTime']) ?? createdAt,
     status: status,
     volunteerId: json['assignedVolunteer'] == null
@@ -154,8 +160,8 @@ Request requestFromBackend(Map<String, dynamic> json) {
         : _readRelationId(json['assignedVolunteer']),
     volunteerName: volunteer == null ? null : userFromBackend(volunteer).name,
     createdAt: createdAt,
-    completedAt:
-        status == RequestStatus.completed ? updatedAt ?? createdAt : null,
+    completedAt: _dateFromJson(json['completedAt']) ??
+        (status == RequestStatus.completed ? updatedAt ?? createdAt : null),
     isProxy: json['isProxyRequest'] == true,
     proxyForName: json['proxyName']?.toString(),
     proxyRelationship: json['proxyRelationship']?.toString(),

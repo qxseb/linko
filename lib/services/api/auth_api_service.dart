@@ -61,7 +61,7 @@ class AuthApiService {
     final userJson = data['user'];
 
     if (token == null || token.isEmpty || userJson is! Map<String, dynamic>) {
-      throw const ApiException('Raspuns de autentificare invalid');
+      throw const ApiException('Invalid authentication response');
     }
 
     return AuthResult(
@@ -74,12 +74,13 @@ class AuthApiService {
 User userFromBackend(Map<String, dynamic> json) {
   return User(
     id: _readId(json),
-    name: json['name']?.toString() ?? 'Utilizator',
+    name: json['name']?.toString() ?? 'User',
     email: json['email']?.toString() ?? '',
     role: _roleFromBackend(json['role']?.toString()),
     phone: json['phone']?.toString(),
     isVerified: json['isVerified'] == true,
     completedTasks: _intFromJson(json['completedTasks']) ?? 0,
+    completedRequests: _intFromJson(json['completedRequests']) ?? 0,
     createdAt: _dateFromJson(json['createdAt']) ?? DateTime.now(),
     lastActive: _dateFromJson(json['updatedAt']),
     avgResponseMinutes: _responseMinutes(json['responseTime']),

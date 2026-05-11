@@ -9,13 +9,11 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 40),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
                 Row(
                   children: [
                     Container(
@@ -40,7 +38,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 48),
+                const Spacer(flex: 2),
                 Text(
                   'Many older people in Romania need a bit of help every day.',
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
@@ -48,7 +46,7 @@ class WelcomeScreen extends StatelessWidget {
                         height: 1.3,
                       ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 Text(
                   'Groceries, medicine, errands, or just a check-in to know they are okay.',
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -56,7 +54,7 @@ class WelcomeScreen extends StatelessWidget {
                         height: 1.5,
                       ),
                 ),
-                const SizedBox(height: 32),
+                const Spacer(flex: 2),
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -163,7 +161,7 @@ class WelcomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Catena Pharmacy, Dorobanți Street (0.8 km)',
+                            'Catena Pharmacy, Dorobanti St. (0.8 km)',
                             style:
                                 Theme.of(context).textTheme.bodySmall!.copyWith(
                                       color: AppTheme.textSecondary,
@@ -174,7 +172,7 @@ class WelcomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
@@ -286,7 +284,7 @@ class WelcomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 40),
+                const Spacer(flex: 3),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
@@ -303,7 +301,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
@@ -320,7 +318,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 8),
                 Center(
                   child: TextButton(
                     onPressed: () => context.go('/auth?mode=login'),
@@ -337,9 +335,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
-              ],
-            ),
+            ],
           ),
         ),
       ),

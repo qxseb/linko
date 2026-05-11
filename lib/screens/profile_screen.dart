@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../models/user_model.dart';
 import '../providers/app_state.dart';
-import '../utils/english_text.dart';
+
 import '../utils/theme.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -105,8 +105,12 @@ class ProfileScreen extends StatelessWidget {
                     const Divider(height: 1),
                     _ProfileItem(
                       icon: Icons.check_circle,
-                      label: 'Completed tasks',
-                      value: '${user.completedTasks}',
+                      label: user.role == UserRole.volunteer
+                          ? 'Tasks completed'
+                          : 'Requests completed',
+                      value: user.role == UserRole.volunteer
+                          ? '${user.completedTasks}'
+                          : '${user.completedRequests}',
                     ),
                     const Divider(height: 1),
                     _ProfileItem(

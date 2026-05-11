@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['requester', 'volunteer'],
+      enum: ["requester", "volunteer"],
       required: true,
     },
     age: {
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema(
     },
     trustLevel: {
       type: String,
-      default: 'Verified',
+      default: "Verified",
     },
     isVerified: {
       type: Boolean,
@@ -43,9 +43,12 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    completedRequests: {
+      type: Number,
+      default: 0,
+    },
     responseTime: {
-      type: String,
-      default: 'aprox. 10 min',
+      type: Number,
     },
   },
   {
@@ -58,7 +61,7 @@ const userSchema = new mongoose.Schema(
         delete ret.passwordHash;
       },
     },
-  }
+  },
 );
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);

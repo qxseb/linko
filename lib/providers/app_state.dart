@@ -10,7 +10,7 @@ import '../services/request_service.dart';
 import '../services/message_service.dart';
 import '../services/notification_service.dart';
 import '../services/storage_service.dart';
-import '../services/mock_data_service.dart';
+
 import '../services/api/api_client.dart';
 import '../services/api/auth_api_service.dart';
 import '../services/api/request_api_service.dart';
@@ -173,8 +173,7 @@ class AppState extends ChangeNotifier {
   Request? getRequestById(String id) => _requestService.getRequestById(id);
 
   User? getUserById(String userId) {
-    return _requestService.getUserById(userId) ??
-        MockDataService.getUserById(userId);
+    return _requestService.getUserById(userId);
   }
 
   Future<Request> createRequest({
@@ -187,6 +186,8 @@ class AppState extends ChangeNotifier {
     String? proxyForName,
     String? proxyRelationship,
     String? proxyNotes,
+    double? latitude,
+    double? longitude,
   }) async {
     if (currentUser == null) throw Exception('Not authenticated');
 
@@ -202,13 +203,15 @@ class AppState extends ChangeNotifier {
       proxyForName: proxyForName,
       proxyRelationship: proxyRelationship,
       proxyNotes: proxyNotes,
+      latitude: latitude,
+      longitude: longitude,
     );
 
     notifyListeners();
     return request;
   }
 
-  Future<Message> acceptRequest(String requestId) async {
+  Future<void> acceptRequest(String requestId) async {
     if (currentUser == null) {
       throw Exception('Not authenticated');
     }
@@ -232,14 +235,13 @@ class AppState extends ChangeNotifier {
         currentUser!.name,
       );
 
-      final initialMessage = await _messageService.addInitialMessage(
+      await _messageService.addInitialMessage(
         request,
         currentUser!.id,
         currentUser!.name,
       );
 
       notifyListeners();
-      return initialMessage;
     } catch (e) {
       setError('Failed to accept request: ${e.toString()}');
       rethrow;
@@ -266,25 +268,9 @@ class AppState extends ChangeNotifier {
         await _messageService.addStatusMessage(requestId, 'inProgress');
       } else if (status == RequestStatus.completed) {
         await _messageService.addStatusMessage(requestId, 'completed');
-
+        await _requestService.refreshRequests();
         if (currentUser != null && currentUser!.role == UserRole.volunteer) {
-          final refreshedFromBackend = await _authService.refreshCurrentUser();
-          if (!refreshedFromBackend && currentUser != null) {
-            final updatedUser = User(
-              id: currentUser!.id,
-              name: currentUser!.name,
-              email: currentUser!.email,
-              role: currentUser!.role,
-              phone: currentUser!.phone,
-              address: currentUser!.address,
-              isVerified: currentUser!.isVerified,
-              completedTasks: currentUser!.completedTasks + 1,
-              createdAt: currentUser!.createdAt,
-              lastActive: currentUser!.lastActive,
-              avgResponseMinutes: currentUser!.avgResponseMinutes,
-            );
-            await _authService.setUser(updatedUser);
-          }
+          await _authService.refreshCurrentUser();
         }
       }
 

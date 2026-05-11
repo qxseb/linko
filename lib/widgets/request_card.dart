@@ -93,7 +93,7 @@ class RequestCard extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                '${requesterInfo!.completedTasks} completed',
+                                '${requesterInfo!.completedRequests} completed',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall!

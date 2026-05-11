@@ -12,6 +12,8 @@ class Request {
   final String description;
   final RequestUrgency urgency;
   final String location;
+  final double? latitude;
+  final double? longitude;
   final DateTime preferredTime;
   final RequestStatus status;
   final String? volunteerId;
@@ -31,6 +33,8 @@ class Request {
     required this.description,
     required this.urgency,
     required this.location,
+    this.latitude,
+    this.longitude,
     required this.preferredTime,
     this.status = RequestStatus.open,
     this.volunteerId,
@@ -87,6 +91,8 @@ class Request {
     String? volunteerId,
     String? volunteerName,
     DateTime? completedAt,
+    double? latitude,
+    double? longitude,
   }) {
     return Request(
       id: id,
@@ -96,6 +102,8 @@ class Request {
       description: description,
       urgency: urgency,
       location: location,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
       preferredTime: preferredTime,
       status: status ?? this.status,
       volunteerId: volunteerId ?? this.volunteerId,
@@ -117,6 +125,8 @@ class Request {
         'description': description,
         'urgency': urgency.name,
         'location': location,
+        'latitude': latitude,
+        'longitude': longitude,
         'preferredTime': preferredTime.toIso8601String(),
         'status': status.name,
         'volunteerId': volunteerId,
@@ -140,6 +150,8 @@ class Request {
         urgency:
             RequestUrgency.values.firstWhere((e) => e.name == json['urgency']),
         location: json['location'],
+        latitude: (json['latitude'] as num?)?.toDouble(),
+        longitude: (json['longitude'] as num?)?.toDouble(),
         preferredTime: DateTime.parse(json['preferredTime']),
         status:
             RequestStatus.values.firstWhere((e) => e.name == json['status']),

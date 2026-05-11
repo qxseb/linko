@@ -14,17 +14,12 @@ const allowedStatuses = [
   "cancelled",
 ];
 
+const USER_SELECT =
+  "name email role age phone trustLevel isVerified completedTasks completedRequests responseTime createdAt";
+
 const requestPopulate = [
-  {
-    path: "requester",
-    select:
-      "name email role age phone trustLevel isVerified completedTasks responseTime createdAt",
-  },
-  {
-    path: "assignedVolunteer",
-    select:
-      "name email role age phone trustLevel isVerified completedTasks responseTime createdAt",
-  },
+  { path: "requester", select: USER_SELECT },
+  { path: "assignedVolunteer", select: USER_SELECT },
 ];
 
 const populateRequest = (query) => query.populate(requestPopulate);
@@ -47,24 +42,17 @@ const ensureAllowed = (value, allowedValues, message) => {
 
 const findRequestOrFail = async (id) => {
   ensureValidId(id);
-
   const request = await HelpRequest.findById(id);
-
   if (!request) {
     const error = new Error("Request not found");
     error.statusCode = 404;
     throw error;
   }
-
   return request;
 };
 
 const createSystemMessage = (requestId, text) =>
-  Message.create({
-    request: requestId,
-    text,
-    type: "system",
-  });
+  Message.create({ request: requestId, text, type: "system" });
 
 const getRequests = async (req, res, next) => {
   try {
@@ -75,21 +63,11 @@ const getRequests = async (req, res, next) => {
     ensureAllowed(urgency, allowedUrgencies, "Urgency filter is invalid");
     ensureAllowed(category, allowedCategories, "Category filter is invalid");
 
-    if (status) {
-      filters.status = status;
-    }
+    if (status) filters.status = status;
+    if (urgency) filters.urgency = urgency;
+    if (category) filters.category = category;
 
-    if (urgency) {
-      filters.urgency = urgency;
-    }
-
-    if (category) {
-      filters.category = category;
-    }
-
-    if (!status) {
-      filters.status = { $nin: ["cancelled", "completed"] };
-    }
+    if (!status) filters.status = { $ne: "cancelled" };
 
     const requests = await populateRequest(
       HelpRequest.find(filters).sort({ createdAt: -1 }),
@@ -104,14 +82,11 @@ const getRequests = async (req, res, next) => {
 const getRequestById = async (req, res, next) => {
   try {
     ensureValidId(req.params.id);
-
     const request = await populateRequest(HelpRequest.findById(req.params.id));
-
     if (!request) {
       res.status(404);
       throw new Error("Request not found");
     }
-
     res.json({ request });
   } catch (error) {
     next(error);
@@ -171,12 +146,10 @@ const createRequest = async (req, res, next) => {
     const populatedRequest = await populateRequest(
       HelpRequest.findById(request.id),
     );
-
     emitSocketEvent("request_created", {
       requestId: request.id,
       request: populatedRequest,
     });
-
     res.status(201).json({ request: populatedRequest });
   } catch (error) {
     next(error);
@@ -215,12 +188,10 @@ const acceptRequest = async (req, res, next) => {
     const populatedRequest = await populateRequest(
       HelpRequest.findById(request.id),
     );
-
     emitSocketEvent("request_accepted", {
       requestId: request.id,
       request: populatedRequest,
     });
-
     res.json({ request: populatedRequest });
   } catch (error) {
     next(error);
@@ -257,12 +228,10 @@ const startRequest = async (req, res, next) => {
     const populatedRequest = await populateRequest(
       HelpRequest.findById(request.id),
     );
-
     emitSocketEvent("request_started", {
       requestId: request.id,
       request: populatedRequest,
     });
-
     res.json({ request: populatedRequest });
   } catch (error) {
     next(error);
@@ -288,10 +257,18 @@ const completeRequest = async (req, res, next) => {
       throw new Error("Only the assigned volunteer can complete this request");
     }
 
+    const now = new Date();
     request.status = "completed";
+    request.completedAt = now;
     await request.save();
 
-    await User.findByIdAndUpdate(req.user.id, { $inc: { completedTasks: 1 } });
+    await Promise.all([
+      User.findByIdAndUpdate(req.user.id, { $inc: { completedTasks: 1 } }),
+      User.findByIdAndUpdate(request.requester, {
+        $inc: { completedRequests: 1 },
+      }),
+    ]);
+
     await createSystemMessage(
       request.id,
       `${req.user.name} completed the request.`,
@@ -300,12 +277,10 @@ const completeRequest = async (req, res, next) => {
     const populatedRequest = await populateRequest(
       HelpRequest.findById(request.id),
     );
-
     emitSocketEvent("request_completed", {
       requestId: request.id,
       request: populatedRequest,
     });
-
     res.json({ request: populatedRequest });
   } catch (error) {
     next(error);
@@ -338,12 +313,10 @@ const cancelRequest = async (req, res, next) => {
     const populatedRequest = await populateRequest(
       HelpRequest.findById(request.id),
     );
-
     emitSocketEvent("request_cancelled", {
       requestId: request.id,
       request: populatedRequest,
     });
-
     res.json({ request: populatedRequest });
   } catch (error) {
     next(error);

@@ -36,9 +36,9 @@ class ApiClient {
   static String get defaultBaseUrl {
     if (_configuredBaseUrl.isNotEmpty) return _configuredBaseUrl;
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:5000';
+      return 'http://10.0.2.2:3001';
     }
-    return 'http://localhost:5000';
+    return 'http://localhost:3001';
   }
 
   Future<void> saveToken(String token) async {
@@ -100,7 +100,7 @@ class ApiClient {
       } else if (method == 'PATCH') {
         request = _client.patch(uri, headers: headers, body: encodedBody);
       } else {
-        throw const ApiException('Metoda API invalida');
+        throw const ApiException('Invalid API method');
       }
 
       final response = await request.timeout(const Duration(seconds: 8));
@@ -110,17 +110,17 @@ class ApiClient {
       rethrow;
     } on TimeoutException {
       throw const ApiException(
-        'Serverul nu raspunde momentan',
+        'Server is not responding',
         isNetworkError: true,
       );
     } on http.ClientException {
       throw const ApiException(
-        'Serverul nu este disponibil momentan',
+        'Server is currently unavailable',
         isNetworkError: true,
       );
     } catch (_) {
       throw const ApiException(
-        'Nu se poate face conexiunea cu serverul',
+        'Could not connect to the server',
         isNetworkError: true,
       );
     }
@@ -150,7 +150,7 @@ class ApiClient {
     if (requiresAuth) {
       final token = await getToken();
       if (token == null || token.isEmpty) {
-        throw const ApiException('Trebuie sa fii autentificat');
+        throw const ApiException('Authentication required');
       }
       headers['Authorization'] = 'Bearer $token';
     }
@@ -163,12 +163,12 @@ class ApiClient {
     final decoded = rawBody.isEmpty ? <String, dynamic>{} : jsonDecode(rawBody);
 
     if (decoded is! Map<String, dynamic>) {
-      throw const ApiException('Raspuns invalid de la server');
+      throw const ApiException('Invalid server response');
     }
 
     if (response.statusCode >= 400) {
       throw ApiException(
-        decoded['message']?.toString() ?? 'A aparut o eroare',
+        decoded['message']?.toString() ?? 'An error occurred',
         statusCode: response.statusCode,
       );
     }

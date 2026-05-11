@@ -6,6 +6,7 @@ import '../../utils/english_text.dart';
 import '../../providers/app_state.dart';
 import '../../utils/theme.dart';
 import '../../widgets/loading_overlay.dart';
+import '../../widgets/location_picker_map.dart';
 
 class CreateRequestScreen extends StatefulWidget {
   const CreateRequestScreen({super.key});
@@ -17,7 +18,7 @@ class CreateRequestScreen extends StatefulWidget {
 class _CreateRequestScreenState extends State<CreateRequestScreen> {
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
-  final _locationController = TextEditingController();
+
   final _proxyNameController = TextEditingController();
   final _proxyNotesController = TextEditingController();
 
@@ -26,12 +27,13 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   DateTime _preferredTime = DateTime.now().add(const Duration(hours: 2));
   bool _isLoading = false;
   bool _isProxy = false;
+  LocationPickerResult? _pickedLocation;
   String _proxyRelationship = 'grandparent';
 
   @override
   void dispose() {
     _descriptionController.dispose();
-    _locationController.dispose();
+
     _proxyNameController.dispose();
     _proxyNotesController.dispose();
     super.dispose();
@@ -50,10 +52,10 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       return;
     }
 
-    if (_locationController.text.trim().isEmpty) {
+    if (_pickedLocation == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Enter the location'),
+          content: Text('Please select a location on the map'),
           backgroundColor: AppTheme.errorColor,
         ),
       );
@@ -92,7 +94,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
         category: _category,
         description: _descriptionController.text.trim(),
         urgency: _urgency,
-        location: _locationController.text.trim(),
+        location: _pickedLocation!.addressText,
+        latitude: _pickedLocation!.latitude,
+        longitude: _pickedLocation!.longitude,
         preferredTime: _preferredTime,
         isProxy: _isProxy,
         proxyForName: _isProxy ? _proxyNameController.text.trim() : null,
@@ -187,19 +191,77 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _locationController,
-                decoration: const InputDecoration(
-                  labelText: 'Location',
-                  hintText: 'e.g. Catena Pharmacy, Dorobanți Street',
-                  prefixIcon: Icon(Icons.location_on),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Location is required';
+              GestureDetector(
+                onTap: () async {
+                  final result =
+                      await Navigator.of(context).push<LocationPickerResult>(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          LocationPickerMap(initial: _pickedLocation),
+                    ),
+                  );
+                  if (result != null) {
+                    setState(() => _pickedLocation = result);
                   }
-                  return null;
                 },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _pickedLocation == null
+                          ? Theme.of(context).colorScheme.outline
+                          : AppTheme.primaryColor,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 16),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: _pickedLocation == null
+                            ? AppTheme.textSecondary
+                            : AppTheme.primaryColor,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _pickedLocation == null
+                            ? Text(
+                                'Tap to select location on map',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: AppTheme.textSecondary,
+                                    ),
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _pickedLocation!.addressText,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    '${_pickedLocation!.latitude.toStringAsFixed(5)}, '
+                                    '${_pickedLocation!.longitude.toStringAsFixed(5)}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                          color: AppTheme.textSecondary,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                      const Icon(Icons.chevron_right,
+                          size: 18, color: AppTheme.textSecondary),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 24),
               Text(

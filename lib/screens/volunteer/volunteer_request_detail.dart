@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import '../../models/request_model.dart';
 import '../../providers/app_state.dart';
@@ -108,7 +111,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                       const Divider(height: 32),
                       _DetailRow(
                         icon: Icons.description,
-                        label: 'Descriere',
+                        label: 'Description',
                         value: request.description,
                       ),
                       const SizedBox(height: 16),
@@ -117,10 +120,56 @@ class VolunteerRequestDetail extends StatelessWidget {
                         label: 'Location',
                         value: request.location,
                       ),
+                      if (request.latitude != null &&
+                          request.longitude != null) ...[
+                        const SizedBox(height: 12),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: SizedBox(
+                            height: 180,
+                            child: FlutterMap(
+                              options: MapOptions(
+                                initialCenter: LatLng(
+                                  request.latitude!,
+                                  request.longitude!,
+                                ),
+                                initialZoom: 15,
+                                interactionOptions: const InteractionOptions(
+                                  flags: InteractiveFlag.none,
+                                ),
+                              ),
+                              children: [
+                                TileLayer(
+                                  urlTemplate:
+                                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                  userAgentPackageName: 'com.linko.app',
+                                ),
+                                MarkerLayer(
+                                  markers: [
+                                    Marker(
+                                      point: LatLng(
+                                        request.latitude!,
+                                        request.longitude!,
+                                      ),
+                                      width: 40,
+                                      height: 40,
+                                      child: const Icon(
+                                        Icons.location_on,
+                                        color: AppTheme.primaryColor,
+                                        size: 40,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 16),
                       _DetailRow(
                         icon: Icons.access_time,
-                        label: 'Timp preferat',
+                        label: 'Preferred time',
                         value: Formatters.formatPreferredTime(
                           request.preferredTime,
                         ),
@@ -212,8 +261,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                         ? null
                         : () async {
                             try {
-                              final requesterMessage =
-                                  await appState.acceptRequest(requestId);
+                              await appState.acceptRequest(requestId);
                               if (context.mounted) {
                                 await showDialog(
                                   context: context,
@@ -317,7 +365,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                                                 .primaryColor
                                                 .withValues(alpha: 0.2),
                                             child: Text(
-                                              requesterMessage.senderName[0]
+                                              request.requesterName[0]
                                                   .toUpperCase(),
                                               style: const TextStyle(
                                                 color: AppTheme.primaryColor,
@@ -333,7 +381,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text(
-                                                  requesterMessage.senderName,
+                                                  request.requesterName,
                                                   style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
@@ -342,7 +390,7 @@ class VolunteerRequestDetail extends StatelessWidget {
                                                 ),
                                                 const SizedBox(height: 2),
                                                 Text(
-                                                  requesterMessage.content,
+                                                  'Thank you for helping!',
                                                   style: const TextStyle(
                                                     fontSize: 13,
                                                     color: Colors.black87,
