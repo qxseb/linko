@@ -1,3 +1,5 @@
+import '../utils/date_time_utils.dart';
+
 enum NotificationType {
   newRequest,
   requestAccepted,
@@ -29,15 +31,15 @@ class AppNotification {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'userId': userId,
-    'type': type.name,
-    'title': title,
-    'message': message,
-    'requestId': requestId,
-    'timestamp': timestamp.toIso8601String(),
-    'isRead': isRead,
-  };
+        'id': id,
+        'userId': userId,
+        'type': type.name,
+        'title': title,
+        'message': message,
+        'requestId': requestId,
+        'timestamp': timestamp.toIso8601String(),
+        'isRead': isRead,
+      };
 
   factory AppNotification.fromJson(Map<String, dynamic> json) =>
       AppNotification(
@@ -47,7 +49,7 @@ class AppNotification {
         title: json['title'],
         message: json['message'],
         requestId: json['requestId'],
-        timestamp: DateTime.parse(json['timestamp']),
+        timestamp: parseLocalDateTime(json['timestamp']) ?? DateTime.now(),
         isRead: json['isRead'] ?? false,
       );
 }

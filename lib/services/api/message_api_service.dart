@@ -1,4 +1,5 @@
 import '../../models/message_model.dart';
+import '../../utils/date_time_utils.dart';
 import 'api_client.dart';
 import 'auth_api_service.dart';
 
@@ -57,8 +58,7 @@ Message messageFromBackend(
             ? 'User'
             : userFromBackend(senderJson).name,
     content: json['text']?.toString() ?? '',
-    timestamp: DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
-        DateTime.now(),
+    timestamp: parseLocalDateTime(json['createdAt']) ?? DateTime.now(),
     isRead: true,
     isSystemMessage: isSystem,
   );

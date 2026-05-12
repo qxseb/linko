@@ -1,3 +1,5 @@
+import '../utils/date_time_utils.dart';
+
 enum UserRole { requester, volunteer }
 
 class User {
@@ -83,9 +85,9 @@ class User {
         isVerified: json['isVerified'] ?? false,
         completedTasks: (json['completedTasks'] as num?)?.toInt() ?? 0,
         completedRequests: (json['completedRequests'] as num?)?.toInt() ?? 0,
-        createdAt: DateTime.parse(json['createdAt']),
+        createdAt: parseLocalDateTime(json['createdAt']) ?? DateTime.now(),
         lastActive: json['lastActive'] != null
-            ? DateTime.parse(json['lastActive'])
+            ? parseLocalDateTime(json['lastActive'])
             : null,
         avgResponseMinutes: json['avgResponseMinutes'] is num
             ? (json['avgResponseMinutes'] as num).toInt()

@@ -1,7 +1,10 @@
 import 'package:intl/intl.dart';
 
+import 'date_time_utils.dart';
+
 class Formatters {
   static String formatDate(DateTime date) {
+    date = localDateTime(date);
     final now = DateTime.now();
     final difference = now.difference(date);
 
@@ -21,14 +24,17 @@ class Formatters {
   }
 
   static String formatTime(DateTime date) {
+    date = localDateTime(date);
     return DateFormat('HH:mm').format(date);
   }
 
   static String formatDateTime(DateTime date) {
+    date = localDateTime(date);
     return DateFormat('d MMM y • HH:mm').format(date);
   }
 
   static String formatPreferredTime(DateTime date) {
+    date = localDateTime(date);
     final now = DateTime.now();
     final difference = date.difference(now);
 

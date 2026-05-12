@@ -1,5 +1,6 @@
 import '../../models/request_model.dart';
 import '../../models/user_model.dart';
+import '../../utils/date_time_utils.dart';
 import 'api_client.dart';
 import 'auth_api_service.dart';
 
@@ -65,7 +66,7 @@ class RequestApiService {
         'description': description,
         'locationText': location,
         'urgency': urgency.name,
-        'preferredTime': preferredTime.toIso8601String(),
+        'preferredTime': toBackendIsoString(preferredTime),
         'isProxyRequest': isProxy,
         'proxyName': proxyForName,
         'proxyRelationship': proxyRelationship,
@@ -249,8 +250,7 @@ String _statusToBackend(RequestStatus status) {
 }
 
 DateTime? _dateFromJson(dynamic value) {
-  if (value == null) return null;
-  return DateTime.tryParse(value.toString());
+  return parseLocalDateTime(value);
 }
 
 String _titleFor(RequestCategory category, String description) {

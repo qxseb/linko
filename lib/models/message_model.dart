@@ -1,3 +1,5 @@
+import '../utils/date_time_utils.dart';
+
 class Message {
   final String id;
   final String requestId;
@@ -36,7 +38,7 @@ class Message {
         senderId: json['senderId'],
         senderName: json['senderName'],
         content: json['content'],
-        timestamp: DateTime.parse(json['timestamp']),
+        timestamp: parseLocalDateTime(json['timestamp']) ?? DateTime.now(),
         isRead: json['isRead'] ?? false,
         isSystemMessage: json['isSystemMessage'] ?? false,
       );

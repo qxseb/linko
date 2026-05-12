@@ -1,4 +1,5 @@
 import '../../models/user_model.dart';
+import '../../utils/date_time_utils.dart';
 import 'api_client.dart';
 
 class AuthResult {
@@ -96,8 +97,7 @@ UserRole _roleFromBackend(String? role) {
 }
 
 DateTime? _dateFromJson(dynamic value) {
-  if (value == null) return null;
-  return DateTime.tryParse(value.toString());
+  return parseLocalDateTime(value);
 }
 
 int? _intFromJson(dynamic value) {

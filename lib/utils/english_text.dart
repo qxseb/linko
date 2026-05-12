@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import '../models/message_model.dart';
 import '../models/request_model.dart';
 import '../models/user_model.dart';
+import 'date_time_utils.dart';
 
 extension RequestCategoryText on RequestCategory {
   String get label {
@@ -75,11 +76,15 @@ extension UserText on User {
   }
 }
 
-String formatTimeText(DateTime date) => DateFormat.Hm().format(date);
+String formatTimeText(DateTime date) =>
+    DateFormat.Hm().format(localDateTime(date));
 
-String formatDateTimeText(DateTime date) => DateFormat.yMMMd().add_Hm().format(date);
+String formatDateTimeText(DateTime date) {
+  return DateFormat.yMMMd().add_Hm().format(localDateTime(date));
+}
 
 String formatPreferredTimeText(DateTime date) {
+  date = localDateTime(date);
   final now = DateTime.now();
   final difference = date.difference(now);
   final time = formatTimeText(date);

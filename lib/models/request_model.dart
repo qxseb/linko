@@ -1,3 +1,5 @@
+import '../utils/date_time_utils.dart';
+
 enum RequestCategory { groceries, pharmacy, errands, checkIn }
 
 enum RequestUrgency { low, medium, high }
@@ -152,14 +154,15 @@ class Request {
         location: json['location'],
         latitude: (json['latitude'] as num?)?.toDouble(),
         longitude: (json['longitude'] as num?)?.toDouble(),
-        preferredTime: DateTime.parse(json['preferredTime']),
+        preferredTime:
+            parseLocalDateTime(json['preferredTime']) ?? DateTime.now(),
         status:
             RequestStatus.values.firstWhere((e) => e.name == json['status']),
         volunteerId: json['volunteerId'],
         volunteerName: json['volunteerName'],
-        createdAt: DateTime.parse(json['createdAt']),
+        createdAt: parseLocalDateTime(json['createdAt']) ?? DateTime.now(),
         completedAt: json['completedAt'] != null
-            ? DateTime.parse(json['completedAt'])
+            ? parseLocalDateTime(json['completedAt'])
             : null,
         isProxy: json['isProxy'] ?? false,
         proxyForName: json['proxyForName'],
