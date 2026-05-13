@@ -6,7 +6,7 @@
 
 Team: Onyx Solutions
 
-[Demo Video](https://youtu.be/jAjmJudZ0A0) • [Pitch Video](https://youtu.be/wjKUxqIhHrI) • [Business Plan](./livrabile/Business-plan_HE-6.0.pptx)
+[Demo Video](https://youtu.be/jAjmJudZ0A0) • [Pitch Video](https://youtu.be/wjKUxqIhHrI) • [Business Plan](./livrabile/CURRENT-business-plan.pdf)
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-02569B?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?logo=dart)](https://dart.dev)
