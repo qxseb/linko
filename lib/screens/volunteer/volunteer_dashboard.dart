@@ -186,105 +186,117 @@ class _VolunteerDashboardState extends State<VolunteerDashboard>
   void _showFilterDialog() {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) => Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Filter requests',
-                    style: Theme.of(context).textTheme.displaySmall,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setModalState(() {
-                        _selectedCategory = null;
-                        _selectedUrgency = null;
-                      });
-                      setState(() {
-                        _selectedCategory = null;
-                        _selectedUrgency = null;
-                      });
-                    },
-                    child: const Text('Reset'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Category',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: RequestCategory.values.map((category) {
-                  final isSelected = _selectedCategory == category;
-                  return FilterChip(
-                    label: Text(_getCategoryLabel(category)),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      setModalState(() {
-                        _selectedCategory = selected ? category : null;
-                      });
-                      setState(() {
-                        _selectedCategory = selected ? category : null;
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Urgency',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: RequestUrgency.values.map((urgency) {
-                  final isSelected = _selectedUrgency == urgency;
-                  return FilterChip(
-                    label: Text(_getUrgencyLabel(urgency)),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      setModalState(() {
-                        _selectedUrgency = selected ? urgency : null;
-                      });
-                      setState(() {
-                        _selectedUrgency = selected ? urgency : null;
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Apply filters'),
+        builder: (context, setModalState) {
+          final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+          final maxHeight = MediaQuery.sizeOf(context).height * 0.82;
+
+          return SafeArea(
+            top: false,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: maxHeight),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(24, 24, 24, 24 + bottomInset),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Filter requests',
+                          style: Theme.of(context).textTheme.displaySmall,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setModalState(() {
+                              _selectedCategory = null;
+                              _selectedUrgency = null;
+                            });
+                            setState(() {
+                              _selectedCategory = null;
+                              _selectedUrgency = null;
+                            });
+                          },
+                          child: const Text('Reset'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Category',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: RequestCategory.values.map((category) {
+                        final isSelected = _selectedCategory == category;
+                        return FilterChip(
+                          label: Text(_getCategoryLabel(category)),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            setModalState(() {
+                              _selectedCategory = selected ? category : null;
+                            });
+                            setState(() {
+                              _selectedCategory = selected ? category : null;
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Urgency',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: RequestUrgency.values.map((urgency) {
+                        final isSelected = _selectedUrgency == urgency;
+                        return FilterChip(
+                          label: Text(_getUrgencyLabel(urgency)),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            setModalState(() {
+                              _selectedUrgency = selected ? urgency : null;
+                            });
+                            setState(() {
+                              _selectedUrgency = selected ? urgency : null;
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Apply filters'),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
